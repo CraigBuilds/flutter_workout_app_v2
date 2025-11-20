@@ -53,8 +53,13 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       items: buildAppBarMenuItems(),
     );
-    if (result == 'settings') {
-      // Navigator.of(context).push(MaterialPageRoute(builder: (_) => buildSettingsPage(context, appState)),);
+    switch (result) {
+      case 'settings': null;
+      case 'createRoutine': null;
+      case 'browseRoutines': null;
+      case 'deleteAllData':
+        database.clearAllData();
+      case 'cancel': null;
     }
   }
 
@@ -63,6 +68,7 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
       ['settings', Icons.settings, 'Settings'],
       ['createRoutine', Icons.create, 'Create Workout Routine'],
       ['browseRoutines', Icons.search, 'Browse Workout Routines'],
+      ['deleteAllData', Icons.delete_forever, 'Delete All Data'],
       ['cancel', Icons.cancel, 'Cancel'],
     ])
       PopupMenuItem<String>(

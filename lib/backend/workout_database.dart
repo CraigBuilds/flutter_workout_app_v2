@@ -120,6 +120,11 @@ class WorkoutDatabase {
     return defaultIndex;
   }
 
+  void clearAllData() {
+    _box.clear();
+    initializeIfDatabaseIsEmpty();
+  }
+
   void seedInitialDataForTesting() {
 
     final workout1 = Workout(
