@@ -118,23 +118,25 @@ class HomePageBody extends StatelessWidget {
 
   Widget _buildWorkoutCard(BuildContext context, Workout workout) {
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(12.0),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(workout.dateKey.toString(), style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
+            Text(
+              workout.dateKey.toString(),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...workout.exercises.values.map((exercise) => _buildExerciseTile(context, workout, exercise)),
-                    _buildAddExerciseButton(context, workout),
-                  ],
-                ),
+              child: ListView(
+                children: [
+                  ...workout.exercises.values.map(
+                    (exercise) => _buildExerciseTile(context, workout, exercise),
+                  ),
+                  _buildAddExerciseButton(context, workout),
+                ],
               ),
             ),
           ],
