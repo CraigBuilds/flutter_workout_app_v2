@@ -13,6 +13,7 @@ Future<void> main() async {
 
   final box = await Hive.openBox<AllWorkouts>('workouts');
   final database = WorkoutDatabase(box);
+  database.initializeIfDatabaseIsEmpty();
 
   runApp(MyApp(database: database));
 }

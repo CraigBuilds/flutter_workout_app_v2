@@ -11,8 +11,11 @@ class WorkoutDatabase {
   Box<AllWorkouts> get box => _box;
 
   //for first-time initialization  
-  bool get isEmpty => _box.isEmpty;
-  void initializeEmptyDatabase() => _box.add(AllWorkouts(workouts: {}));
+  void initializeIfDatabaseIsEmpty() {
+    if (_box.isEmpty) {
+      _box.add(AllWorkouts(workouts: {}));
+    }
+  }
 
   // Helper to get the single AllWorkouts object stored in the box
   AllWorkouts get boxData => _box.values.first;
