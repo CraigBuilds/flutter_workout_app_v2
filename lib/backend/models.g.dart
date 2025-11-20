@@ -6,9 +6,43 @@ part of 'models.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class WorkoutAdapter extends TypeAdapter<Workout> {
+class AllWorkoutsAdapter extends TypeAdapter<AllWorkouts> {
   @override
   final int typeId = 0;
+
+  @override
+  AllWorkouts read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AllWorkouts(
+      workouts: (fields[0] as Map).cast<Date, Workout>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AllWorkouts obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.workouts);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AllWorkoutsAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class WorkoutAdapter extends TypeAdapter<Workout> {
+  @override
+  final int typeId = 1;
 
   @override
   Workout read(BinaryReader reader) {
@@ -18,7 +52,7 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
     };
     return Workout(
       dateKey: fields[0] as Date,
-      exercises: (fields[1] as List).cast<Exercise>(),
+      exercises: (fields[1] as Map).cast<String, Exercise>(),
     );
   }
 
@@ -45,7 +79,7 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
 
 class ExerciseAdapter extends TypeAdapter<Exercise> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
   Exercise read(BinaryReader reader) {
@@ -54,8 +88,8 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Exercise(
-      name: fields[0] as String,
-      sets: (fields[1] as List).cast<ExerciseSet>(),
+      nameKey: fields[0] as String,
+      sets: (fields[1] as Map).cast<int, ExerciseSet>(),
     );
   }
 
@@ -64,7 +98,7 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
     writer
       ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.nameKey)
       ..writeByte(1)
       ..write(obj.sets);
   }
@@ -82,7 +116,7 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
 
 class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
   ExerciseSet read(BinaryReader reader) {
@@ -91,26 +125,29 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ExerciseSet(
-      reps: fields[0] as int,
-      weight: fields[1] as double,
+      indexKey: fields[0] as int,
+      reps: fields[1] as int,
+      weight: fields[2] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, ExerciseSet obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
-      ..write(obj.reps)
+      ..write(obj.indexKey)
       ..writeByte(1)
-      ..write(obj.weight)
+      ..write(obj.reps)
       ..writeByte(2)
-      ..write(obj.completed)
+      ..write(obj.weight)
       ..writeByte(3)
-      ..write(obj.partialReps)
+      ..write(obj.completed)
       ..writeByte(4)
-      ..write(obj.restMinutes)
+      ..write(obj.partialReps)
       ..writeByte(5)
+      ..write(obj.restMinutes)
+      ..writeByte(6)
       ..write(obj.rir);
   }
 
@@ -127,7 +164,7 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
 
 class DateAdapter extends TypeAdapter<Date> {
   @override
-  final int typeId = 3;
+  final int typeId = 4;
 
   @override
   Date read(BinaryReader reader) {

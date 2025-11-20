@@ -11,9 +11,8 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     WidgetsFlutterBinding.ensureInitialized();
     await initHive();
-    final box = await Hive.openBox<Workout>('workouts');
+    final box = await Hive.openBox<AllWorkouts>('workouts');
     final database = WorkoutDatabase(box);
-    await database.seedWithExampleIfEmpty();
 
     await tester.pumpWidget(MyApp(database: database));
 

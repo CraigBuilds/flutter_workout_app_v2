@@ -11,9 +11,8 @@ Future<void> main() async {
 
   await initHive();
 
-  final box = await Hive.openBox<Workout>('workouts');
+  final box = await Hive.openBox<AllWorkouts>('workouts');
   final database = WorkoutDatabase(box);
-  await database.seedWithExampleIfEmpty();
 
   runApp(MyApp(database: database));
 }
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HiveBoxMaterialApp<Workout>(
+    return HiveBoxMaterialApp<AllWorkouts>(
       box: database.box,
       title: 'Workouts App',
       homeBuilder: (context, box) {

@@ -6,6 +6,7 @@ Future<void> initHive() async {
 
   Platform.isWindows ? Hive.init(Directory('hive_data').path) : await Hive.initFlutter();
 
+  Hive.registerAdapter(AllWorkoutsAdapter());
   Hive.registerAdapter(WorkoutAdapter());
   Hive.registerAdapter(ExerciseAdapter());
   Hive.registerAdapter(ExerciseSetAdapter());
@@ -13,53 +14,65 @@ Future<void> initHive() async {
 }
 
 @HiveType(typeId: 0)
+class AllWorkouts {
+
+  @HiveField(0)
+  final Map<Date, Workout> workouts;
+
+  AllWorkouts({required this.workouts});
+}
+
+@HiveType(typeId: 1)
 class Workout {
 
   @HiveField(0)
   final Date dateKey;
 
   @HiveField(1)
-  final List<Exercise> exercises;
+  final Map<String, Exercise> exercises;
 
   Workout({required this.dateKey, required this.exercises});
 }
-@HiveType(typeId: 1)
+@HiveType(typeId: 2)
 class Exercise {
 
   @HiveField(0)
-  final String name;
+  final String nameKey;
 
   @HiveField(1)
-  final List<ExerciseSet> sets;
+  final Map<int, ExerciseSet> sets;
 
-  Exercise({required this.name, required this.sets});
-}
-
-@HiveType(typeId: 2)
-class ExerciseSet {
-
-  @HiveField(0)
-  final int reps;
-
-  @HiveField(1)
-  final double weight;
-
-  @HiveField(2)
-  final bool completed = false;
-
-  @HiveField(3)
-  final int partialReps = 0;
-
-  @HiveField(4)
-  final int restMinutes = 0;
-
-  @HiveField(5)
-  final int rir = 0;
-
-  ExerciseSet({required this.reps, required this.weight});
+  Exercise({required this.nameKey, required this.sets});
 }
 
 @HiveType(typeId: 3)
+class ExerciseSet {
+
+  @HiveField(0)
+  final int indexKey;
+
+  @HiveField(1)
+  final int reps;
+
+  @HiveField(2)
+  final double weight;
+
+  @HiveField(3)
+  final bool completed = false;
+
+  @HiveField(4)
+  final int partialReps = 0;
+
+  @HiveField(5)
+  final int restMinutes = 0;
+
+  @HiveField(6)
+  final int rir = 0;
+
+  ExerciseSet({required this.indexKey, required this.reps, required this.weight});
+}
+
+@HiveType(typeId: 4)
 class Date {
 
   @HiveField(0)
