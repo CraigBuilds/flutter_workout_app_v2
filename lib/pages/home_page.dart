@@ -35,48 +35,48 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: Icon(Icons.more_vert),
-          onPressed: () => handleAppBarMenuButtonPressed(database, context)
+          onPressed: () => handleAppBarMenuButtonPressed(context),
         )
       ]
     );
   }
-}
 
-Future<void> handleAppBarMenuButtonPressed(WorkoutDatabase database, BuildContext context) async {
-  final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-  final result = await showMenu<String>(
-    context: context,
-    position: RelativeRect.fromLTRB(
-      overlay.size.width,
-      kToolbarHeight,
-      0,
-      0,
-    ),
-    items: buildAppBarMenuItems(),
-  );
-  if (result == 'settings') {
-    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => buildSettingsPage(context, appState)),);
-  }
-}
-
-List<PopupMenuEntry<String>> buildAppBarMenuItems() => [
-  for (var item in [
-    ['settings', Icons.settings, 'Settings'],
-    ['createRoutine', Icons.create, 'Create Workout Routine'],
-    ['browseRoutines', Icons.search, 'Browse Workout Routines'],
-    ['cancel', Icons.cancel, 'Cancel'],
-  ])
-    PopupMenuItem<String>(
-      value: item[0] as String,
-      child: Row(
-        children: [
-          Icon(item[1] as IconData, size: 20),
-          SizedBox(width: 8),
-          Text(item[2] as String),
-        ],
+  Future<void> handleAppBarMenuButtonPressed(BuildContext context) async {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final result = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        overlay.size.width,
+        kToolbarHeight,
+        0,
+        0,
       ),
-    ),
-];
+      items: buildAppBarMenuItems(),
+    );
+    if (result == 'settings') {
+      // Navigator.of(context).push(MaterialPageRoute(builder: (_) => buildSettingsPage(context, appState)),);
+    }
+  }
+
+  List<PopupMenuEntry<String>> buildAppBarMenuItems() => [
+    for (var item in [
+      ['settings', Icons.settings, 'Settings'],
+      ['createRoutine', Icons.create, 'Create Workout Routine'],
+      ['browseRoutines', Icons.search, 'Browse Workout Routines'],
+      ['cancel', Icons.cancel, 'Cancel'],
+    ])
+      PopupMenuItem<String>(
+        value: item[0] as String,
+        child: Row(
+          children: [
+            Icon(item[1] as IconData, size: 20),
+            SizedBox(width: 8),
+            Text(item[2] as String),
+          ],
+        ),
+      ),
+  ];
+}
 
 // -- Body
 
