@@ -66,7 +66,7 @@ class HomePageBody extends StatelessWidget {
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.add),
                         label: const Text('Add Exercise'),
-                        onPressed: () => handleAddExercise(context, database, workout.dateKey),
+                        onPressed: () => handleAddExercise(context, database, workout),
                       ),
                     ),
                     ...workout.exercises.values.map((exercise) {
@@ -84,7 +84,7 @@ class HomePageBody extends StatelessWidget {
                               child: ElevatedButton.icon(
                                 icon: const Icon(Icons.add),
                                 label: const Text('Add Set'),
-                                onPressed: () => handleAddSet(context, database, workout.dateKey, exercise.nameKey),
+                                onPressed: () => handleAddSet(context, database, workout, exercise),
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(80, 32),
                                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -113,7 +113,7 @@ void handleAddWorkout(BuildContext context, WorkoutDatabase database) {
   database.putWorkout(now, Workout(dateKey: now, exercises: {}));
 }
 
-void handleAddExercise(BuildContext context, WorkoutDatabase database, Date dateKey) {
+void handleAddExercise(BuildContext context, WorkoutDatabase database, Workout workout) {
   final exerciseNameController = TextEditingController();
 
   showDialog(
@@ -130,7 +130,7 @@ void handleAddExercise(BuildContext context, WorkoutDatabase database, Date date
             onPressed: () {
               final exerciseName = exerciseNameController.text;
               if (exerciseName.isNotEmpty) {
-                database.putExerciseInWorkout(database.getWorkout(dateKey)!, Exercise(nameKey: exerciseName, sets: {}));
+                database.putExerciseInWorkout(workout, Exercise(nameKey: exerciseName, sets: {}));
               }
               Navigator.of(context).pop();
             },
@@ -142,7 +142,7 @@ void handleAddExercise(BuildContext context, WorkoutDatabase database, Date date
   );
 }
 
-void handleAddSet(BuildContext context, WorkoutDatabase database, Date dateKey, String exerciseNameKey) {
+void handleAddSet(BuildContext context, WorkoutDatabase database, Workout workout, Exercise exercise) {
   final repsController = TextEditingController();
   final weightController = TextEditingController();
 
@@ -172,10 +172,10 @@ void handleAddSet(BuildContext context, WorkoutDatabase database, Date dateKey, 
               final reps = int.tryParse(repsController.text);
               final weight = double.tryParse(weightController.text);
               if (reps != null && weight != null) {
-                database.putExerciseSetInExercise(
-                  database.getWorkout(dateKey)!,
-                  database.getWorkout(dateKey)!.exercises[exerciseNameKey]!,
-                  ExerciseSet(indexKey: database.getNumberOfSetsInExercise(database.getWorkout(dateKey)!, exerciseNameKey) + 1, reps: reps, weight: weight),
+                database.putSetInExercise(
+                  workout,
+                  exercise,
+                  ExerciseSet(indexKey: database.getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight),
                 );
               }
               Navigator.of(context).pop();

@@ -61,7 +61,7 @@ class WorkoutDatabase {
     return exercise.sets[setIndex];
   }
 
-  void putExerciseSetInExercise(Workout workout, Exercise exercise, ExerciseSet exerciseSet) {
+  void putSetInExercise(Workout workout, Exercise exercise, ExerciseSet exerciseSet) {
     final allWorkouts = boxData; //read the database
     exercise.sets[exerciseSet.indexKey] = exerciseSet; //modify the given exercise
     workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
