@@ -275,14 +275,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  hive_listener:
-    dependency: "direct main"
-    description:
-      name: hive_listener
-      sha256: "5a3902d82971a2621ae6468f43feb4e0c3ed8f583f89a0d955b58343b845ab34"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
   http_multi_server:
     dependency: transitive
     description:

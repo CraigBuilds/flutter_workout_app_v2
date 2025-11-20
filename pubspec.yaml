@@ -14,7 +14,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   hive: ^2.2.3 # for database persistence
   hive_flutter: ^1.1.0 # for flutter integration with hive
-  hive_listener: ^1.2.1 # for reactive UI updates with hive
 
 dev_dependencies:
   flutter_test:
