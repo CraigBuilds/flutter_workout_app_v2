@@ -69,6 +69,14 @@ class WorkoutDatabase {
     _box.putAt(0, allWorkouts); //write back to the database
   }
 
+  void pushSetToExercise(Workout workout, Exercise exercise, int reps, double weight) {
+    putSetInExercise(
+      workout,
+      exercise,
+      ExerciseSet(indexKey: getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight),
+    );
+  }
+
   void deleteExerciseSetFromExercise(Workout workout, Exercise exercise, int setIndex) {
     final allWorkouts = boxData; //read the database
     exercise.sets.remove(setIndex); //modify the given exercise

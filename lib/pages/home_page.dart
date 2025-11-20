@@ -172,11 +172,7 @@ void handleAddSet(BuildContext context, WorkoutDatabase database, Workout workou
               final reps = int.tryParse(repsController.text);
               final weight = double.tryParse(weightController.text);
               if (reps != null && weight != null) {
-                database.putSetInExercise(
-                  workout,
-                  exercise,
-                  ExerciseSet(indexKey: database.getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight),
-                );
+                database.pushSetToExercise(workout,exercise,reps,weight);
               }
               Navigator.of(context).pop();
             },
