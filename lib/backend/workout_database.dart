@@ -121,8 +121,8 @@ class WorkoutDatabase {
   }
 
   void clearAllData() {
-    _box.clear();
-    initializeIfDatabaseIsEmpty();
+    final empty = AllWorkouts(workouts: {});
+    _box.putAt(0, empty); //replace root object
   }
 
   bool workoutExistsForToday() {
