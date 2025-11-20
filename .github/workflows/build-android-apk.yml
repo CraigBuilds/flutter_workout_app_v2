@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main   # Run this workflow only on pushes to main
+    tags:
+      - '*'    # any tag (or e.g. 'v*' if you only want version tags)
 
 permissions:
   contents: write   # allow this workflow to create/update releases
@@ -46,7 +48,9 @@ jobs:
       - name: Build release APK
         run: flutter build apk --release # Build the release APK
 
+      # Release for main branch pushes (tagged "latest")
       - name: Create / update GitHub Release with APK
+        if: github.ref == 'refs/heads/main'
         uses: ncipollo/release-action@v1 # This creates (or updates) a release tagged "latest" and attaches the APK.
         with:
           tag: latest
@@ -55,3 +59,15 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true #allow updating the same "latest" release on each push
           makeLatest: true   #mark this as the latest release
+
+      # Release for tag pushes (tag-specific, not marked latest)
+      - name: Create tag-based GitHub Release with APK
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}          # e.g. v1.2.3
+          name: ${{ github.ref_name }}         # release name = tag
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true                   # in case you rerun the workflow
+          makeLatest: false                    # do NOT mark this as latest
