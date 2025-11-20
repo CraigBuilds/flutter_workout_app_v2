@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'backend/models.dart';
+import 'backend/workout_database.dart';
 
 Future<void> main() async {
   
@@ -9,37 +10,17 @@ Future<void> main() async {
   await initHive();
 
   final box = await Hive.openBox<Workout>('workouts');
+  final database = WorkoutDatabase(box);
+  await database.seedWithExampleIfEmpty();
 
-  if (box.isEmpty) {
-    await box.add(
-      Workout(
-        dateKey: Date.today(),
-        exercises: [
-          Exercise(
-            name: 'Bench Press',
-            sets: [
-              ExerciseSet(reps: 8, weight: 60),
-              ExerciseSet(reps: 6, weight: 70),
-              ExerciseSet(reps: 4, weight: 80),
-            ],
-          ),
-          Exercise(
-            name: 'Overhead Press',
-            sets: [
-              ExerciseSet(reps: 10, weight: 30),
-              ExerciseSet(reps: 8, weight: 35),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  runApp(const MyApp());
+  runApp(MyApp(database: database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+  final WorkoutDatabase database;
+
+  const MyApp({super.key, required this.database});
 
   @override
   Widget build(BuildContext context) {
