@@ -24,7 +24,7 @@ class WorkoutDatabase {
 
   // -- Workout
 
-  Workout? getWorkout(Date date) => boxData.workouts[date];
+  Workout? getWorkoutOrNull(Date date) => boxData.workouts[date];
 
   void putWorkout(Date date, Workout workout) {
     final allWorkouts = boxData; //read
@@ -40,7 +40,7 @@ class WorkoutDatabase {
 
   // -- Exercise
 
-  Exercise? getExerciseFromWorkout(Workout workout, String exerciseName) {
+  Exercise? getExerciseFromWorkoutOrNull(Workout workout, String exerciseName) {
     return workout.exercises[exerciseName];
   }
 
@@ -60,7 +60,7 @@ class WorkoutDatabase {
 
   // -- ExerciseSet
 
-  ExerciseSet? getExerciseSetFromExercise(Exercise exercise, int setIndex) {
+  ExerciseSet? getExerciseSetFromExerciseOrNull(Exercise exercise, int setIndex) {
     return exercise.sets[setIndex];
   }
 
@@ -102,11 +102,22 @@ class WorkoutDatabase {
     return exercise.sets.length;
   }
 
-  Workout? getWorkoutAtIndex(int index) {
+  Workout? getWorkoutAtIndexOrNull(int index) {
     if (index < 0 || index >= boxData.workouts.length) {
       return null;
     }
     return boxData.workouts.values.elementAt(index);
+  }
+
+  int getIndexOfTodayWorkoutOr({int defaultIndex = 0}) {
+    final today = Date.today();
+    final workoutDates = boxData.workouts.keys.toList();
+    for (int i = 0; i < workoutDates.length; i++) {
+      if (workoutDates[i] >= today) {
+        return i;
+      }
+    }
+    return defaultIndex;
   }
 
   void seedInitialDataForTesting() {

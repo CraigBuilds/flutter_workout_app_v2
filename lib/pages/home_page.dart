@@ -87,11 +87,21 @@ class HomePageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildAddWorkoutButton(context),
-        Expanded(child: _buildWorkoutList(context)),
-      ],
+    return PageView.builder(
+      scrollDirection: Axis.horizontal,
+      controller: PageController(
+        viewportFraction: 0.95,
+        initialPage: database.getIndexOfTodayWorkoutOr(defaultIndex: database.getTotalWorkoutCount()),
+      ),
+      itemCount: database.getTotalWorkoutCount() + 1, // +1 for "Plan New Workout" pane
+      itemBuilder: (_, i) {
+        final workout = database.getWorkoutAtIndexOrNull(i);
+        if (workout != null) {
+          return _buildWorkoutCard(context, workout);
+        } else {
+          return _buildAddWorkoutButton(context);
+        }
+      }
     );
   }
 
@@ -106,25 +116,29 @@ class HomePageBody extends StatelessWidget {
     );
   }
 
-  Widget _buildWorkoutList(BuildContext context) {
-    return ListView.builder(
-      itemCount: database.getTotalWorkoutCount(),
-      itemBuilder: (context, index) {
-        final workout = database.getWorkoutAtIndex(index)!;
-        return _buildWorkoutCard(context, workout);
-      },
-    );
-  }
-
   Widget _buildWorkoutCard(BuildContext context, Workout workout) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      child: ExpansionTile(
-        title: Text(workout.dateKey.toString()),
-        children: [
-          _buildAddExerciseButton(context, workout),
-          ...workout.exercises.values.map((exercise) => _buildExerciseTile(context, workout, exercise)),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(workout.dateKey.toString(), style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...workout.exercises.values.map((exercise) => _buildExerciseTile(context, workout, exercise)),
+                    _buildAddExerciseButton(context, workout),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
