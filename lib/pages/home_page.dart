@@ -99,19 +99,36 @@ class HomePageBody extends StatelessWidget {
         if (workout != null) {
           return _buildWorkoutCard(context, workout);
         } else {
-          return _buildAddWorkoutButton(context);
+          return _buildBlankWorkoutCard(context);
         }
       }
     );
   }
 
-  Widget _buildAddWorkoutButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.add),
-        label: const Text('Add Workout'),
-        onPressed: () => _handleAddWorkout(context),
+  Widget _buildBlankWorkoutCard(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(12.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Plan New Workout',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: Center(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add Workout'),
+                  onPressed: () => _handleAddWorkout(context),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
