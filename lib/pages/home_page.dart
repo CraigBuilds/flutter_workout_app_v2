@@ -150,7 +150,7 @@ class HomePageBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              workout.dateKey.toString(),
+                '${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 12),
