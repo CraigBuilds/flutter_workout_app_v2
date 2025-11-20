@@ -1,0 +1,57 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main   # Run this workflow only on pushes to main
+
+permissions:
+  contents: write   # allow this workflow to create/update releases
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest #start with a clean Ubuntu environment
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 #use the v4 built-in action to checkout the repository
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2 #use the v2 third-party action to set up Flutter
+        with:
+          channel: stable
+          cache: true #cache the Flutter SDK between runs to avoid re-downloading
+
+      - name: Generate Android project # Generates android and other missing Android boilerplate in the CI workspace. Existing lib/ and windows/ contents are preserved.
+        run: flutter create . --platforms=android
+
+      - name: Set up Java
+        uses: actions/setup-java@v4 #use the v4 built-in action to set up Java (version 17 is required for Flutter Android builds)
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle #cache Gradle dependencies to speed up subsequent builds
+
+      - name: Cache pub packages
+        uses: actions/cache@v4 #cache Dart/Flutter pub packages
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Flutter pub get
+        run: flutter pub get # Get Flutter dependencies
+
+      - name: Build release APK
+        run: flutter build apk --release # Build the release APK
+
+      - name: Create / update GitHub Release with APK
+        uses: ncipollo/release-action@v1 # This creates (or updates) a release tagged "latest" and attaches the APK.
+        with:
+          tag: latest
+          name: Latest build
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true #allow updating the same "latest" release on each push
+          makeLatest: true   #mark this as the latest release
