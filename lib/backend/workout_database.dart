@@ -125,6 +125,11 @@ class WorkoutDatabase {
     initializeIfDatabaseIsEmpty();
   }
 
+  bool workoutExistsForToday() {
+    final today = Date.today();
+    return boxData.workouts.containsKey(today);
+  }
+
   void seedInitialDataForTesting() {
 
     final workout1 = Workout(

@@ -120,7 +120,7 @@ class HomePageBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Plan New Workout',
+              database.workoutExistsForToday() ? 'Plan New Workout' : 'Add Today\'s Workout',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 12),
@@ -129,7 +129,9 @@ class HomePageBody extends StatelessWidget {
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.add),
                   label: const Text('Add Workout'),
-                  onPressed: () => _handleAddWorkout(context),
+                  onPressed: () => database.workoutExistsForToday()
+                      ? _handleAddWorkout(context, date: null)
+                      : _handleAddWorkout(context, date: Date.today()),
                 ),
               ),
             ),
@@ -209,9 +211,22 @@ class HomePageBody extends StatelessWidget {
 
   // -- Handlers --
 
-  void _handleAddWorkout(BuildContext context) {
-    final now = Date.today();
-    database.putWorkout(now, Workout(dateKey: now, exercises: {}));
+  void _handleAddWorkout(BuildContext context, {Date? date}) async {
+    if (date != null) {
+      database.putWorkout(date, Workout(dateKey: date, exercises: {}));
+    }
+    else {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+      );
+      if (pickedDate != null) {
+        final date = Date(pickedDate.year, pickedDate.month, pickedDate.day);
+        database.putWorkout(date, Workout(dateKey: date, exercises: {}));
+      }
+    }
   }
 
   void _handleAddExercise(BuildContext context, Workout workout) {
