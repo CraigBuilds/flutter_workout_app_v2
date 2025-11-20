@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_workout_app_v2/backend/models.dart';
 import 'package:flutter_workout_app_v2/backend/workout_database.dart';
 
 class HomePage extends StatelessWidget {
@@ -36,31 +37,153 @@ class HomePageBody extends StatelessWidget {
 
   const HomePageBody({super.key, required this.database});
 
-  //Each workout should be a card, each exercise in that workout should be a tile, and each set within that exercise should be a line of text saying "x reps @ y kg"
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: database.getTotalWorkoutCount(),
-      itemBuilder: (context, index) {
-        final workout = database.getWorkoutAtIndex(index)!;
-        return Card(
-          margin: const EdgeInsets.all(8.0),
-          child: ExpansionTile(
-            title: Text(workout.dateKey.toString()),
-            children: workout.exercises.values.map((exercise) {
-              return ListTile(
-                title: Text(exercise.nameKey),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: exercise.sets.values.map((set) {
-                    return Text('${set.reps} reps @ ${set.weight} kg');
-                  }).toList(),
-                )
-              );
-            }).toList(),
+    return Column(
+      children: [
+        // AddWorkout button
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.add),
+            label: const Text('Add Workout'),
+            onPressed: () => handleAddWorkout(context, database),
           ),
-        );
-      },
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: database.getTotalWorkoutCount(),
+            itemBuilder: (context, index) {
+              final workout = database.getWorkoutAtIndex(index)!;
+              return Card(
+                margin: const EdgeInsets.all(8.0),
+                child: ExpansionTile(
+                  title: Text(workout.dateKey.toString()),
+                  children: [
+                    // AddExercise button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add Exercise'),
+                        onPressed: () => handleAddExercise(context, database, workout.dateKey),
+                      ),
+                    ),
+                    ...workout.exercises.values.map((exercise) {
+                      return ListTile(
+                        title: Text(exercise.nameKey),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...exercise.sets.values.map((set) {
+                              return Text('${set.reps} reps @ ${set.weight} kg');
+                            }),
+                            // AddSet button
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: ElevatedButton.icon(
+                                icon: const Icon(Icons.add),
+                                label: const Text('Add Set'),
+                                onPressed: () => handleAddSet(context, database, workout.dateKey, exercise.nameKey),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(80, 32),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
+}
+
+// -- Handlers --
+
+void handleAddWorkout(BuildContext context, WorkoutDatabase database) {
+  final now = Date.today();
+  database.putWorkout(now, Workout(dateKey: now, exercises: {}));
+}
+
+void handleAddExercise(BuildContext context, WorkoutDatabase database, Date dateKey) {
+  final exerciseNameController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Add Exercise'),
+        content: TextField(
+          controller: exerciseNameController,
+          decoration: const InputDecoration(labelText: 'Exercise Name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              final exerciseName = exerciseNameController.text;
+              if (exerciseName.isNotEmpty) {
+                database.putExerciseInWorkout(database.getWorkout(dateKey)!, Exercise(nameKey: exerciseName, sets: {}));
+              }
+              Navigator.of(context).pop();
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void handleAddSet(BuildContext context, WorkoutDatabase database, Date dateKey, String exerciseNameKey) {
+  final repsController = TextEditingController();
+  final weightController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Add Set'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: repsController,
+              decoration: const InputDecoration(labelText: 'Reps'),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: weightController,
+              decoration: const InputDecoration(labelText: 'Weight (kg)'),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              final reps = int.tryParse(repsController.text);
+              final weight = double.tryParse(weightController.text);
+              if (reps != null && weight != null) {
+                database.putExerciseSetInExercise(
+                  database.getWorkout(dateKey)!,
+                  database.getWorkout(dateKey)!.exercises[exerciseNameKey]!,
+                  ExerciseSet(indexKey: database.getNumberOfSetsInExercise(database.getWorkout(dateKey)!, exerciseNameKey) + 1, reps: reps, weight: weight),
+                );
+              }
+              Navigator.of(context).pop();
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      );
+    },
+  );
 }

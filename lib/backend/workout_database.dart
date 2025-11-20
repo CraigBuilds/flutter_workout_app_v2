@@ -83,6 +83,14 @@ class WorkoutDatabase {
     return boxData.workouts.length;
   }
 
+  int getNumberOfSetsInExercise(Workout workout, String exerciseName) {
+    final exercise = workout.exercises[exerciseName];
+    if (exercise == null) {
+      return 0;
+    }
+    return exercise.sets.length;
+  }
+
   Workout? getWorkoutAtIndex(int index) {
     if (index < 0 || index >= boxData.workouts.length) {
       return null;
