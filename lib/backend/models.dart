@@ -1,7 +1,11 @@
-import 'package:hive/hive.dart'; //for decorators and Box class
+import 'dart:io';
+import 'package:hive_flutter/hive_flutter.dart';
 part 'models.g.dart';
 
-void registerHiveTypes() {
+Future<void> initHive() async {
+
+  Platform.isWindows ? Hive.init(Directory('hive_data').path) : await Hive.initFlutter();
+
   Hive.registerAdapter(WorkoutAdapter());
   Hive.registerAdapter(ExerciseAdapter());
   Hive.registerAdapter(ExerciseSetAdapter());
