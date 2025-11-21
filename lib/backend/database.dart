@@ -16,13 +16,13 @@ class WorkoutDatabase {
   void initializeIfDatabaseIsEmpty() {
     if (box.isEmpty) {
       box.add(AllWorkouts(workouts: {
-        Date.today() -1 : Workout(dateKey: Date.today() -1, exercises: {}),
-        Date.today() -2 : Workout(dateKey: Date.today() -2, exercises: {}),
-        Date.today() -3 : Workout(dateKey: Date.today() -3, exercises: {}),
-        Date.today() -4 : Workout(dateKey: Date.today() -4, exercises: {}),
-        Date.today() -5 : Workout(dateKey: Date.today() -5, exercises: {}),
-        Date.today() -6 : Workout(dateKey: Date.today() -6, exercises: {}),
         Date.today() -7 : Workout(dateKey: Date.today() -7, exercises: {}),
+        Date.today() -6 : Workout(dateKey: Date.today() -6, exercises: {}),
+        Date.today() -5 : Workout(dateKey: Date.today() -5, exercises: {}),
+        Date.today() -4 : Workout(dateKey: Date.today() -4, exercises: {}),
+        Date.today() -3 : Workout(dateKey: Date.today() -3, exercises: {}),
+        Date.today() -2 : Workout(dateKey: Date.today() -2, exercises: {}),
+        Date.today() -1 : Workout(dateKey: Date.today() -1, exercises: {}),
       }));
     }
   }
