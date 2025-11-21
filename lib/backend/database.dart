@@ -133,6 +133,21 @@ class WorkoutDatabase {
     return defaultIndex;
   }
 
+  List<(Date, ExerciseSet)> getHistoricalSets(Exercise exercise) {
+    final allWorkouts = readData();
+    final List<(Date, ExerciseSet)> historicalSets = [];
+    for (final workout in allWorkouts.workouts.values) {
+      final ex = workout.exercises[exercise.nameKey];
+      if (ex != null) {
+        for (final set in ex.sets.values) {
+          historicalSets.add((workout.dateKey, set));
+        }
+      }
+    }
+    historicalSets.sort((a, b) => b.$1 > a.$1 ? 1 : -1);
+    return historicalSets;
+  }
+
   void clearAllData() {
     final empty = AllWorkouts(workouts: {});
     writeData(empty); //replace root object

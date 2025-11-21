@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_workout_app_v2/backend/models.dart';
 import 'package:flutter_workout_app_v2/backend/database.dart';
+import 'package:flutter_workout_app_v2/pages/set_logging_page.dart';
 
+//rename to WorkoutCarouselPage and add an actual home page?
 class HomePage extends StatelessWidget {
   final WorkoutDatabase database;
 
@@ -209,10 +211,10 @@ class HomePageBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ...exercise.sets.values.map((set) => Text('${set.reps} reps @ ${set.weight} kg')),
-            _buildAddSetButton(context, workout, exercise),
           ],
         ),
-      )
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: exercise, selectedWorkout: workout))),
+      ),
     );
   }
 
@@ -224,22 +226,6 @@ class HomePageBody extends StatelessWidget {
         title: Text('Add Exercise'),
         onTap: () => _handleAddExercise(context, workout),
       )
-    );
-  }
-
-  //todo this will eventually be deleted, and sets will be added through the set logging page
-  Widget _buildAddSetButton(BuildContext context, Workout workout, Exercise exercise) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4.0),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.add),
-        label: const Text('Add Set'),
-        onPressed: () => _handleAddSet(context, workout, exercise),
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(80, 32),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-        ),
-      ),
     );
   }
 
@@ -298,49 +284,6 @@ class HomePageBody extends StatelessWidget {
               ],
             );
           }
-        );
-      },
-    );
-  }
-
-  //This will eventually be deleted, and sets will be added through the set logging page
-  void _handleAddSet(BuildContext context, Workout workout, Exercise exercise) {
-    final repsController = TextEditingController(text: '0');
-    final weightController = TextEditingController(text: '0');
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Set'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: repsController,
-                decoration: const InputDecoration(labelText: 'Reps'),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: weightController,
-                decoration: const InputDecoration(labelText: 'Weight (kg)'),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                final reps = int.tryParse(repsController.text);
-                final weight = double.tryParse(weightController.text);
-                if (reps != null && weight != null) {
-                  database.pushSetToExercise(workout, exercise, reps, weight);
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Add'),
-            ),
-          ],
         );
       },
     );
