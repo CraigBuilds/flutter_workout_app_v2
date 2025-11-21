@@ -236,6 +236,7 @@ class HomePageBody extends StatelessWidget {
       database.putWorkout(date, Workout(dateKey: date, exercises: {}));
     }
     else {
+      //todo replace with navigation to a "select date" page (use table_calendar package - not a dialog)
       final pickedDate = await showDatePicker(
         context: context,
         initialDate: Date.today().toDateTime().add(Duration(days: 1)),
