@@ -3,7 +3,7 @@ import 'models.dart';
 
 ///A Very simplex NoSQL (key-value) database that stores all data as a binary blob at key 0 in a Hive box.
 ///Hive just manages the the serialization and storage to disk (cross-platform), and listens for changes.
-///Surprisingly, this is cleaner than using json for serialization, freezed for code-gen/data-classes, and shared_preferences for storage.
+///Surprisingly, this is cleaner than using json for serialization, freezed for code-gen/data-classes, and shared_preferences for storage. Also less complex than full DB like Drift.
 class WorkoutDatabase {
   
   final Box<AllWorkouts> box;
