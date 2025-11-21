@@ -21,12 +21,12 @@ class HomePage extends StatelessWidget {
 // -- AppBar
 
 class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-
   final WorkoutDatabase database;
 
   const HomePageAppBar({super.key, required this.database});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +34,15 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: const Text('Workouts'),
       actions: [
         IconButton(
-          icon: Icon(Icons.more_vert),
-          onPressed: () => handleAppBarMenuButtonPressed(context),
-        )
-      ]
+          icon: const Icon(Icons.more_vert),
+          onPressed: () => _showMenu(context),
+        ),
+      ],
     );
   }
 
-  Future<void> handleAppBarMenuButtonPressed(BuildContext context) async {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+  Future<void> _showMenu(BuildContext context) async {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     final result = await showMenu<String>(
       context: context,
       position: RelativeRect.fromLTRB(
@@ -51,41 +51,58 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
         0,
         0,
       ),
-      items: buildAppBarMenuItems(),
+      items: _menuItems(),
     );
-    switch (result) {
-      case 'settings': null;
-      case 'createRoutine': null;
-      case 'browseRoutines': null;
-      case 'simulated date offset': handleSimulatedDateOffsetPressed(context);
-      case 'deleteAllData': database.clearAllData();
-      case 'cancel': null;
+    if (context.mounted) {
+      _handleMenuSelection(context, result);
     }
   }
 
-  List<PopupMenuEntry<String>> buildAppBarMenuItems() => [
-    for (var item in [
-      ['settings', Icons.settings, 'Settings'],
-      ['createRoutine', Icons.create, 'Create Workout Routine'],
-      ['browseRoutines', Icons.search, 'Browse Workout Routines'],
-      ['simulated date offset', Icons.date_range, 'Simulated Date Offset'],
-      ['deleteAllData', Icons.delete_forever, 'Delete All Data'],
-      ['cancel', Icons.cancel, 'Cancel'],
-    ])
-      PopupMenuItem<String>(
-        value: item[0] as String,
-        child: Row(
-          children: [
-            Icon(item[1] as IconData, size: 20),
-            SizedBox(width: 8),
-            Text(item[2] as String),
-          ],
-        ),
-      ),
-  ];
+  List<PopupMenuEntry<String>> _menuItems() => [
+        _menuItem('settings', Icons.settings, 'Settings'),
+        _menuItem('createRoutine', Icons.create, 'Create Workout Routine'),
+        _menuItem('browseRoutines', Icons.search, 'Browse Workout Routines'),
+        _menuItem('simulatedDateOffset', Icons.date_range, 'Simulated Date Offset'),
+        _menuItem('deleteAllData', Icons.delete_forever, 'Delete All Data'),
+        _menuItem('cancel', Icons.cancel, 'Cancel'),
+      ];
 
-  void handleSimulatedDateOffsetPressed(BuildContext context) async {
-    final offsetController = TextEditingController(text: Date.simulatedDateOffsetDays.toString());
+  PopupMenuItem<String> _menuItem(String value, IconData icon, String text) {
+    return PopupMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 8),
+          Text(text),
+        ],
+      ),
+    );
+  }
+
+  void _handleMenuSelection(BuildContext context, String? result) {
+    switch (result) {
+      case 'settings':
+        break;
+      case 'createRoutine':
+        break;
+      case 'browseRoutines':
+        break;
+      case 'simulatedDateOffset':
+        _showSimulatedDateOffsetDialog(context);
+        break;
+      case 'deleteAllData':
+        database.clearAllData();
+        break;
+      case 'cancel':
+      default:
+        break;
+    }
+  }
+
+  void _showSimulatedDateOffsetDialog(BuildContext context) async {
+    final offsetController =
+        TextEditingController(text: Date.simulatedDateOffsetDays.toString());
 
     await showDialog(
       context: context,
