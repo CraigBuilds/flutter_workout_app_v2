@@ -210,7 +210,7 @@ class HomePageBody extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ...exercise.sets.values.map((set) => Text('${set.reps} reps @ ${set.weight} kg')),
+            ...exercise.sets.values.map((set) => Text('${set.reps} reps @ ${set.weight} kg ${set.completed ? "✓" : ""}')),
           ],
         ),
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: exercise, selectedWorkout: workout))),
