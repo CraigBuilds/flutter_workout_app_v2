@@ -46,8 +46,9 @@ class SetLoggingPage extends StatelessWidget {
         child: ListView.builder(
           itemCount: selectedExercise.sets.length,
           itemBuilder: (context, index) {
-            final set = selectedExercise.sets[index];
-            return _buildExerciseSetTile(context, set!, null);
+            final setsAsList = selectedExercise.sets.values.toList();
+            final set = setsAsList[index];
+            return _buildExerciseSetTile(context, set, null);
           },
         ),
       ),
@@ -138,8 +139,8 @@ class SetLoggingPage extends StatelessWidget {
   Future openAddNewSetDialog(BuildContext context) => openSetDialog(
     context: context,
     title: 'Add New Set',
-    initialReps: '',
-    initialWeight: '',
+    initialReps: '0',
+    initialWeight: '0',
     onSubmit: (reps, weight) {
       database.pushSetToExercise(
         selectedWorkout,
