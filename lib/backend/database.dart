@@ -163,6 +163,7 @@ class WorkoutDatabase {
       }
     }
     historicalSets.sort((a, b) => b.$1 > a.$1 ? 1 : -1);
+    historicalSets.retainWhere((element) => element.$2.completed);
     return historicalSets;
   }
 

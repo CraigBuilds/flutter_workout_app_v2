@@ -156,7 +156,7 @@ class SetLoggingPage extends StatelessWidget {
 
   Widget _buildExerciseSetTile(BuildContext context, ExerciseSet set, Date? date) => Card(
     child: ListTile(
-      leading: Checkbox(
+      leading: date == null ? Checkbox(
         value: set.completed,
         onChanged: (value) {
           database.markSetAsCompleted(
@@ -166,12 +166,10 @@ class SetLoggingPage extends StatelessWidget {
             value!,
           );
         },
-      ),
+      ) : null,
       title: date != null ? Text('Set ${set.indexKey} on ${date.toString()}') : Text('Set ${set.indexKey}'),
       subtitle: Text('${set.reps} reps @ ${set.weight} kg'),
-      onTap: () {
-        openEditSetDialog(context, set);
-      },
+      onTap: () =>openEditSetDialog(context, set),
       onLongPress: () => openExerciseSetLongPressContextMenu(context, set),
     ),
   );
