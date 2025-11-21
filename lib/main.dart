@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'backend/models.dart';
-import 'backend/workout_database.dart';
-import 'backend/hive_box_material_app.dart';
+import 'backend/database.dart';
 import 'pages/home_page.dart';
 
 Future<void> main() async {
@@ -26,10 +25,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HiveBoxMaterialApp<AllWorkouts>(
-      box: database.box,
-      title: 'Workouts App',
-      homeBuilder: (_, __) => HomePage(database: database)
+    return ValueListenableBuilder<Box<AllWorkouts>>(
+      valueListenable: database.box.listenable(),
+      builder: (context, box, _) {
+        return MaterialApp(
+          title: 'Workouts App',
+          home: HomePage(database: database),
+        );
+      },
     );
   }
 }
