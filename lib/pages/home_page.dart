@@ -189,7 +189,7 @@ class HomePageBody extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                ...workout.exercises.values.map((exercise) => _buildExerciseTile(context, workout, exercise)),
+                ...workout.exercises.values.map((exercise) => _buildExerciseCard(context, workout, exercise)),
                 _buildAddExerciseButton(context, workout),
               ],
             ),
@@ -199,18 +199,7 @@ class HomePageBody extends StatelessWidget {
     );
   }
 
-  Widget _buildAddExerciseButton(BuildContext context, Workout workout) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      child: ListTile(
-        leading: Icon(Icons.add),
-        title: Text('Add Exercise'),
-        onTap: () => _handleAddExercise(context, workout),
-      )
-    );
-  }
-
-  Widget _buildExerciseTile(BuildContext context, Workout workout, Exercise exercise) {
+  Widget _buildExerciseCard(BuildContext context, Workout workout, Exercise exercise) {
     return Card(
       color: Colors.grey[200],
       margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -223,6 +212,17 @@ class HomePageBody extends StatelessWidget {
             _buildAddSetButton(context, workout, exercise),
           ],
         ),
+      )
+    );
+  }
+
+  Widget _buildAddExerciseButton(BuildContext context, Workout workout) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: ListTile(
+        leading: Icon(Icons.add),
+        title: Text('Add Exercise'),
+        onTap: () => _handleAddExercise(context, workout),
       )
     );
   }
@@ -263,6 +263,7 @@ class HomePageBody extends StatelessWidget {
     }
   }
 
+  //This will eventually be deleted, and instead the add exercise button will take you to the exercise selection page
   void _handleAddExercise(BuildContext context, Workout workout) {
     final exerciseNames = database.getAvailableExerciseNames();
     String? selectedExercise = exerciseNames.isNotEmpty ? exerciseNames.first : null;
