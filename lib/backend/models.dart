@@ -121,6 +121,11 @@ class Date {
   bool operator >= (Date other) {
       return this > other || this == other;
   }
+
+  Date operator - (int days) {
+      final dt = DateTime(year, month, day).subtract(Duration(days: days));
+      return Date(dt.year, dt.month, dt.day);
+  }
   
   @override
   int get hashCode { return year * 10000 + month * 100 + day; }
