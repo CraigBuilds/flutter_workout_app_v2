@@ -143,4 +143,8 @@ class Date {
       int.parse(parts[2]),
     );
   }
+
+  DateTime toDateTime() {
+    return DateTime(year, month, day);
+  }
 }

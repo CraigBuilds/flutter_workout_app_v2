@@ -171,7 +171,7 @@ class HomePageBody extends StatelessWidget {
             child: Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.add),
-                label: const Text('Add Workout'),
+                label: const Text('Add Workout'), //todo, remove the add workout button. Just have an add exercise button, and let it auto create the workout for today if it doesn't exist (look at v1)
                 onPressed: () => database.workoutExistsForToday()
                     ? _handleAddWorkout(context, date: null)
                     : _handleAddWorkout(context, date: Date.today()),
@@ -238,8 +238,8 @@ class HomePageBody extends StatelessWidget {
     else {
       final pickedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
+        initialDate: Date.today().toDateTime().add(Duration(days: 1)),
+        firstDate: Date.today().toDateTime().add(Duration(days: 1)),
         lastDate: DateTime(2100),
       );
       if (pickedDate != null) {
