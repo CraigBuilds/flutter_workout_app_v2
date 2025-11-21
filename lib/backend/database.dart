@@ -24,7 +24,9 @@ class WorkoutDatabase {
 
   // -- Workout
 
-  Workout? getWorkoutOrNull(Date date) => readData().workouts[date];
+  Workout? getWorkoutOrNull(Date date) {
+    return readData().workouts[date];
+  }
 
   void putWorkout(Date date, Workout workout) {
     final allWorkouts = readData(); //read
