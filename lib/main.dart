@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box<AllWorkouts>>(
+    return ValueListenableBuilder(
       valueListenable: database.box.listenable(),
       builder: (context, box, _) {
         return MaterialApp(

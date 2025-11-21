@@ -3,39 +3,37 @@ import 'models.dart';
 
 class WorkoutDatabase {
   
-  final Box<AllWorkouts> _box;
+  final Box<AllWorkouts> box;
 
-  WorkoutDatabase(this._box);
-
-  // Exposed so composition root (main.dart) can wire listeners.
-  Box<AllWorkouts> get box => _box;
+  WorkoutDatabase(this.box);
 
   //for first-time initialization  
   void initializeIfDatabaseIsEmpty() {
-    if (_box.isEmpty) {
-      _box.add(AllWorkouts(workouts: {}));
+    if (box.isEmpty) {
+      box.add(AllWorkouts(workouts: {})); //adds at index 0
     }
   }
 
-  // Helper to get the single AllWorkouts object stored in the box
-  AllWorkouts get boxData => _box.values.first;
+  // Helper to get and set the single AllWorkouts object stored in the box
+  AllWorkouts readData() => box.values.first;
+  void writeData(AllWorkouts data) => box.putAt(0, data);
 
   // ---- CRUD operations ---
 
   // -- Workout
 
-  Workout? getWorkoutOrNull(Date date) => boxData.workouts[date];
+  Workout? getWorkoutOrNull(Date date) => readData().workouts[date];
 
   void putWorkout(Date date, Workout workout) {
-    final allWorkouts = boxData; //read
+    final allWorkouts = readData(); //read
     allWorkouts.workouts[date] = workout; //modify
-    _box.putAt(0, allWorkouts); //write
+    writeData(allWorkouts); //write
   }
 
   void deleteWorkout(Date date) {
-    final allWorkouts = boxData; //read
+    final allWorkouts = readData(); //read
     allWorkouts.workouts.remove(date); //modify
-    _box.putAt(0, allWorkouts); //write
+    writeData(allWorkouts); //write
   }
 
   // -- Exercise
@@ -45,17 +43,17 @@ class WorkoutDatabase {
   }
 
   void putExerciseInWorkout(Workout workout, Exercise exercise) {
-    final allWorkouts = boxData; //read the database
+    final allWorkouts = readData(); //read the database
     workout.exercises[exercise.nameKey] = exercise; //modify the given workout
     allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database
-    _box.putAt(0, allWorkouts); //write back to the database
+    writeData(allWorkouts); //write back to the database
   }
 
   void deleteExerciseFromWorkout(Workout workout, String exerciseName) {
-    final allWorkouts = boxData; //read the database
+    final allWorkouts = readData(); //read the database
     workout.exercises.remove(exerciseName); //modify the given workout
     allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database
-    _box.putAt(0, allWorkouts); //write back to the database
+    writeData(allWorkouts); //write back to the database
   }
 
   // -- ExerciseSet
@@ -65,11 +63,11 @@ class WorkoutDatabase {
   }
 
   void putSetInExercise(Workout workout, Exercise exercise, ExerciseSet exerciseSet) {
-    final allWorkouts = boxData; //read the database
+    final allWorkouts = readData(); //read the database
     exercise.sets[exerciseSet.indexKey] = exerciseSet; //modify the given exercise
     workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
     allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database
-    _box.putAt(0, allWorkouts); //write back to the database
+    writeData(allWorkouts); //write back to the database
   }
 
   void pushSetToExercise(Workout workout, Exercise exercise, int reps, double weight) {
@@ -81,17 +79,17 @@ class WorkoutDatabase {
   }
 
   void deleteExerciseSetFromExercise(Workout workout, Exercise exercise, int setIndex) {
-    final allWorkouts = boxData; //read the database
+    final allWorkouts = readData(); //read the database
     exercise.sets.remove(setIndex); //modify the given exercise
     workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
     allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database
-    _box.putAt(0, allWorkouts); //write back to the database
+    writeData(allWorkouts); //write back to the database
   }
 
   // ---- Additional helper methods ----
 
   int getTotalWorkoutCount() {
-    return boxData.workouts.length;
+    return readData().workouts.length;
   }
 
   int getNumberOfSetsInExercise(Workout workout, String exerciseName) {
@@ -103,15 +101,15 @@ class WorkoutDatabase {
   }
 
   Workout? getWorkoutAtIndexOrNull(int index) {
-    if (index < 0 || index >= boxData.workouts.length) {
+    if (index < 0 || index >= readData().workouts.length) {
       return null;
     }
-    return boxData.workouts.values.elementAt(index);
+    return readData().workouts.values.elementAt(index);
   }
 
   int getIndexOfTodayWorkoutOr({int defaultIndex = 0}) {
     final today = Date.today();
-    final workoutDates = boxData.workouts.keys.toList();
+    final workoutDates = readData().workouts.keys.toList();
     for (int i = 0; i < workoutDates.length; i++) {
       if (workoutDates[i] >= today) {
         return i;
@@ -122,17 +120,17 @@ class WorkoutDatabase {
 
   void clearAllData() {
     final empty = AllWorkouts(workouts: {});
-    _box.putAt(0, empty); //replace root object
+    writeData(empty); //replace root object
   }
 
   bool workoutExistsForToday() {
     final today = Date.today();
-    return boxData.workouts.containsKey(today);
+    return readData().workouts.containsKey(today);
   }
 
   void forceRebuild() {
-    final allWorkouts = boxData;
-    _box.putAt(0, allWorkouts);
+    final allWorkouts = readData();
+    writeData(allWorkouts);
   }
 
   void seedInitialDataForTesting() {
