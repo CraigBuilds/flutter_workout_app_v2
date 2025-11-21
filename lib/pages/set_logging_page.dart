@@ -185,6 +185,10 @@ class SetLoggingPage extends StatelessWidget {
                 selectedExercise,
                 set.indexKey,
               );
+              database.renumberExerciseSets(
+                selectedWorkout,
+                selectedExercise,
+              );
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),

@@ -97,7 +97,20 @@ class WorkoutDatabase {
     final allWorkouts = readData(); //read the database
     exercise.sets.remove(setIndex); //modify the given exercise
     workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
-    allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database
+    allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database    
+    writeData(allWorkouts); //write back to the database
+  }
+
+  void renumberExerciseSets(Workout workout, Exercise exercise) {
+    final allWorkouts = readData(); //read the database
+    final setsList = exercise.sets.values.toList();
+    exercise.sets.clear();
+    for (int i = 0; i < setsList.length; i++) {
+      final set = setsList[i];
+      exercise.sets[i + 1] = ExerciseSet(indexKey: i + 1, reps: set.reps, weight: set.weight);
+    }
+    workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
+    allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database    
     writeData(allWorkouts); //write back to the database
   }
 
