@@ -162,87 +162,72 @@ class HomePageBody extends StatelessWidget {
 
   Widget _buildBlankWorkoutCard(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(12.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              database.workoutExistsForToday() ? 'Plan New Workout' : 'Add Today\'s Workout',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: Center(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Workout'),
-                  onPressed: () => database.workoutExistsForToday()
-                      ? _handleAddWorkout(context, date: null)
-                      : _handleAddWorkout(context, date: Date.today()),
-                ),
+      child: Column(
+        children: [
+          ListTile(title: Text(database.workoutExistsForToday() ? 'Plan New Workout' : 'Add Today\'s Workout')),
+          Expanded(
+            child: Center(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.add),
+                label: const Text('Add Workout'),
+                onPressed: () => database.workoutExistsForToday()
+                    ? _handleAddWorkout(context, date: null)
+                    : _handleAddWorkout(context, date: Date.today()),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildWorkoutCard(BuildContext context, Workout workout) {
     return Card(
-      margin: const EdgeInsets.all(12.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                '${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ListView(
-                children: [
-                  ...workout.exercises.values.map(
-                    (exercise) => _buildExerciseTile(context, workout, exercise),
-                  ),
-                  _buildAddExerciseButton(context, workout),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAddExerciseButton(BuildContext context, Workout workout) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.add),
-        label: const Text('Add Exercise'),
-        onPressed: () => _handleAddExercise(context, workout),
-      ),
-    );
-  }
-
-  Widget _buildExerciseTile(BuildContext context, Workout workout, Exercise exercise) {
-    return ListTile(
-      title: Text(exercise.nameKey),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          ...exercise.sets.values.map((set) => Text('${set.reps} reps @ ${set.weight} kg')),
-          _buildAddSetButton(context, workout, exercise),
+          ListTile(title: Text('${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}')),
+          Expanded(
+            child: ListView(
+              children: [
+                ...workout.exercises.values.map((exercise) => _buildExerciseTile(context, workout, exercise)),
+                _buildAddExerciseButton(context, workout),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
+  Widget _buildAddExerciseButton(BuildContext context, Workout workout) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: ListTile(
+        leading: Icon(Icons.add),
+        title: Text('Add Exercise'),
+        onTap: () => _handleAddExercise(context, workout),
+      )
+    );
+  }
+
+  Widget _buildExerciseTile(BuildContext context, Workout workout, Exercise exercise) {
+    return Card(
+      color: Colors.grey[200],
+      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      child: ListTile(
+        title: Text(exercise.nameKey),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...exercise.sets.values.map((set) => Text('${set.reps} reps @ ${set.weight} kg')),
+            _buildAddSetButton(context, workout, exercise),
+          ],
+        ),
+      )
+    );
+  }
+
+  //todo this will eventually be deleted, and sets will be added through the set logging page
   Widget _buildAddSetButton(BuildContext context, Workout workout, Exercise exercise) {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
