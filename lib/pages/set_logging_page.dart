@@ -166,34 +166,32 @@ class SetLoggingPage extends StatelessWidget {
   );
 
   Future openExerciseSetLongPressContextMenu(BuildContext context, ExerciseSet set) async {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-    final result = await showMenu<String>(
+    await showDialog(
       context: context,
-      position: RelativeRect.fromLTRB(
-        overlay.size.width / 2,
-        overlay.size.height / 2,
-        overlay.size.width / 2,
-        overlay.size.height / 2,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Set'),
+        content: Text('Are you sure you want to delete set ${set.indexKey}?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              database.deleteExerciseSetFromExercise(
+                selectedWorkout,
+                selectedExercise,
+                set.indexKey,
+              );
+              Navigator.of(context).pop();
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
-      items: [
-        PopupMenuItem<String>(
-          value: 'delete',
-          child: Text('Delete Set'),
-        ),
-        PopupMenuItem<String>(
-          value: 'cancel',
-          child: Text('Cancel'),
-        ),
-      ],
     );
-
-    if (result == 'delete') {
-      database.deleteExerciseSetFromExercise(
-        selectedWorkout,
-        selectedExercise,
-        set.indexKey,
-      );
-    }
-}
+  }
 
 }
