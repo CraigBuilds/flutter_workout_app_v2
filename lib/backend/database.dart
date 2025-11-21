@@ -187,4 +187,26 @@ class WorkoutDatabase {
     putWorkout(workout2.dateKey, workout2);
   }
 
+  // ---- Static Data ---- (We will eventually put this in the hive box as well, so the user can add more items)
+
+  List<String> getAvailableExerciseNames() {
+    return [
+      'Squat',
+      'Bench Press',
+      'Deadlift',
+      'Overhead Press',
+      'Barbell Row',
+      'Pull-Up',
+      'Dip',
+      'Bicep Curl',
+      'Tricep Extension',
+      'Leg Press',
+      'Lunge',
+      'Calf Raise',
+      'Plank',
+      'Crunch',
+      'Russian Twist',
+    ];
+  }
+
 }

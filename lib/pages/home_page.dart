@@ -264,37 +264,47 @@ class HomePageBody extends StatelessWidget {
   }
 
   void _handleAddExercise(BuildContext context, Workout workout) {
-    final exerciseNameController = TextEditingController();
+    final exerciseNames = database.getAvailableExerciseNames();
+    String? selectedExercise = exerciseNames.isNotEmpty ? exerciseNames.first : null;
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Exercise'),
-          content: TextField(
-            controller: exerciseNameController,
-            decoration: const InputDecoration(labelText: 'Exercise Name'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                final exerciseName = exerciseNameController.text;
-                if (exerciseName.isNotEmpty) {
-                  database.putExerciseInWorkout(workout, Exercise(nameKey: exerciseName, sets: {}));
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Add Exercise'),
+              content: DropdownButton<String>(
+                value: selectedExercise,
+                isExpanded: true,
+                items: exerciseNames.map((name) => DropdownMenuItem(value: name, child: Text(name))).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedExercise = value;
+                  });
                 }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Add'),
-            ),
-          ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (selectedExercise != null && selectedExercise!.isNotEmpty) {
+                      database.putExerciseInWorkout(workout, Exercise(nameKey: selectedExercise!, sets: {}));
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
+            );
+          }
         );
       },
     );
   }
 
   void _handleAddSet(BuildContext context, Workout workout, Exercise exercise) {
-    final repsController = TextEditingController();
-    final weightController = TextEditingController();
+    final repsController = TextEditingController(text: '0');
+    final weightController = TextEditingController(text: '0');
 
     showDialog(
       context: context,
