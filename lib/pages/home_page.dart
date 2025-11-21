@@ -61,6 +61,7 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
   }
 
+  //todo, move some of this to a settings page
   List<PopupMenuEntry<String>> _menuItems() => [
         _menuItem('settings', Icons.settings, 'Settings'),
         _menuItem('createRoutine', Icons.create, 'Create Workout Routine'),
