@@ -84,11 +84,13 @@ class Date {
   @HiveField(2)
   final int day;
 
+  static int simulatedDateOffsetDays = 0;
+
   const Date(this.year, this.month, this.day);
 
   factory Date.today() {
       final now = DateTime.now();
-      return Date(now.year, now.month, now.day);
+      return Date(now.year, now.month, now.day + simulatedDateOffsetDays);
   }
 
   @override

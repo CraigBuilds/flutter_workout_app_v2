@@ -57,8 +57,8 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
       case 'settings': null;
       case 'createRoutine': null;
       case 'browseRoutines': null;
-      case 'deleteAllData':
-        database.clearAllData();
+      case 'simulated date offset': handleSimulatedDateOffsetPressed(context);
+      case 'deleteAllData': database.clearAllData();
       case 'cancel': null;
     }
   }
@@ -68,6 +68,7 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
       ['settings', Icons.settings, 'Settings'],
       ['createRoutine', Icons.create, 'Create Workout Routine'],
       ['browseRoutines', Icons.search, 'Browse Workout Routines'],
+      ['simulated date offset', Icons.date_range, 'Simulated Date Offset'],
       ['deleteAllData', Icons.delete_forever, 'Delete All Data'],
       ['cancel', Icons.cancel, 'Cancel'],
     ])
@@ -82,6 +83,37 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
   ];
+
+  void handleSimulatedDateOffsetPressed(BuildContext context) async {
+    final offsetController = TextEditingController(text: Date.simulatedDateOffsetDays.toString());
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Set Simulated Date Offset (days)'),
+          content: TextField(
+            controller: offsetController,
+            decoration: const InputDecoration(labelText: 'Offset in days'),
+            keyboardType: TextInputType.number,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final offset = int.tryParse(offsetController.text);
+                if (offset != null) {
+                  Date.simulatedDateOffsetDays = offset;
+                  database.forceRebuild();
+                }
+                Navigator.of(context).pop();
+              },
+              child: const Text('Set'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 // -- Body

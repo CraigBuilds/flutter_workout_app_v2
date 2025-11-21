@@ -130,6 +130,11 @@ class WorkoutDatabase {
     return boxData.workouts.containsKey(today);
   }
 
+  void forceRebuild() {
+    final allWorkouts = boxData;
+    _box.putAt(0, allWorkouts);
+  }
+
   void seedInitialDataForTesting() {
 
     final workout1 = Workout(
