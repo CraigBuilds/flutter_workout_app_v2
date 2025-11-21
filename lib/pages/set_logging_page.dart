@@ -156,7 +156,7 @@ class SetLoggingPage extends StatelessWidget {
 
   Widget _buildExerciseSetTile(BuildContext context, ExerciseSet set, Date? date) => Card(
     child: ListTile(
-      title: date != null ? Text('Set ${set.indexKey + 1} on ${date.toString()}') : Text('Set ${set.indexKey + 1}'),
+      title: date != null ? Text('Set ${set.indexKey} on ${date.toString()}') : Text('Set ${set.indexKey}'),
       subtitle: Text('${set.reps} reps @ ${set.weight} kg'),
       onTap: () {
         openEditSetDialog(context, set);

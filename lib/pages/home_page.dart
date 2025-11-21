@@ -252,7 +252,7 @@ class HomePageBody extends StatelessWidget {
   //This will eventually be deleted, and instead the add exercise button will take you to the exercise selection page
   void _handleAddExercise(BuildContext context, Workout workout) {
     final exerciseNames = database.getAvailableExerciseNames();
-    String? selectedExercise = exerciseNames.isNotEmpty ? exerciseNames.first : null;
+    String selectedExerciseName = exerciseNames.first;
 
     showDialog(
       context: context,
@@ -262,22 +262,22 @@ class HomePageBody extends StatelessWidget {
             return AlertDialog(
               title: const Text('Add Exercise'),
               content: DropdownButton<String>(
-                value: selectedExercise,
+                value: selectedExerciseName,
                 isExpanded: true,
                 items: exerciseNames.map((name) => DropdownMenuItem(value: name, child: Text(name))).toList(),
                 onChanged: (value) {
                   setState(() {
-                    selectedExercise = value;
+                    selectedExerciseName = value!;
                   });
                 }
               ),
               actions: [
                 TextButton(
                   onPressed: () {
-                    if (selectedExercise != null && selectedExercise!.isNotEmpty) {
-                      database.putExerciseInWorkout(workout, Exercise(nameKey: selectedExercise!, sets: {}));
-                    }
+                    final e = database.getExerciseFromWorkoutOrNull(workout, selectedExerciseName) ?? Exercise(nameKey: selectedExerciseName, sets: {});
+                    database.putExerciseInWorkout(workout, e);
                     Navigator.of(context).pop();
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: e, selectedWorkout: workout)));
                   },
                   child: const Text('Add'),
                 ),
