@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_workout_app_v2/backend/models.dart';
 import 'package:flutter_workout_app_v2/backend/database.dart';
 import 'package:flutter_workout_app_v2/pages/set_logging_page.dart';
+import 'package:flutter_workout_app_v2/pages/exercise_selector_page.dart';
 
 //rename to WorkoutCarouselPage and add an actual home page?
 class HomePage extends StatelessWidget {
@@ -225,7 +226,7 @@ class HomePageBody extends StatelessWidget {
       child: ListTile(
         leading: Icon(Icons.add),
         title: Text('Add Exercise'),
-        onTap: () => _handleAddExercise(context, workout),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ExerciseSelectorPage(database: database, selectedWorkout: workout))),
       )
     );
   }
@@ -249,46 +250,6 @@ class HomePageBody extends StatelessWidget {
         database.putWorkout(date, Workout(dateKey: date, exercises: {}));
       }
     }
-  }
-
-  //This will eventually be deleted, and instead the add exercise button will take you to the exercise selection page
-  void _handleAddExercise(BuildContext context, Workout workout) {
-    final exerciseNames = database.getAvailableExerciseNames();
-    String selectedExerciseName = exerciseNames.first;
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Add Exercise'),
-              content: DropdownButton<String>(
-                value: selectedExerciseName,
-                isExpanded: true,
-                items: exerciseNames.map((name) => DropdownMenuItem(value: name, child: Text(name))).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedExerciseName = value!;
-                  });
-                }
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    final e = database.getExerciseFromWorkoutOrNull(workout, selectedExerciseName) ?? Exercise(nameKey: selectedExerciseName, sets: {});
-                    database.putExerciseInWorkout(workout, e);
-                    Navigator.of(context).pop();
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: e, selectedWorkout: workout)));
-                  },
-                  child: const Text('Add'),
-                ),
-              ],
-            );
-          }
-        );
-      },
-    );
   }
 
   void handleLongPressOfExerciseCard(BuildContext context, Workout workout, Exercise exercise) {
