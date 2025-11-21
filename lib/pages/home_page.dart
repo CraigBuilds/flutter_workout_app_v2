@@ -302,6 +302,7 @@ class HomePageBody extends StatelessWidget {
     );
   }
 
+  //This will eventually be deleted, and sets will be added through the set logging page
   void _handleAddSet(BuildContext context, Workout workout, Exercise exercise) {
     final repsController = TextEditingController(text: '0');
     final weightController = TextEditingController(text: '0');
