@@ -7,13 +7,7 @@ import 'pages/home_page.dart';
 Future<void> main() async {
   
   WidgetsFlutterBinding.ensureInitialized();
-
-  await initHive();
-
-  final box = await Hive.openBox<AllWorkouts>('workouts');
-  final database = WorkoutDatabase(box);
-  database.initializeIfDatabaseIsEmpty();
-
+  final database = await initHive();
   runApp(MyApp(database: database));
 }
 

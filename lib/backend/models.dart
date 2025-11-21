@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'database.dart';
 part 'models.g.dart';
 
-Future<void> initHive() async {
+Future<WorkoutDatabase> initHive() async {
 
   Platform.isWindows ? Hive.init(Directory('hive_data').path) : await Hive.initFlutter();
 
@@ -11,6 +12,12 @@ Future<void> initHive() async {
   Hive.registerAdapter(ExerciseAdapter());
   Hive.registerAdapter(ExerciseSetAdapter());
   Hive.registerAdapter(DateAdapter());
+
+  final box = await Hive.openBox<AllWorkouts>('workouts');
+  final database = WorkoutDatabase(box);
+  database.initializeIfDatabaseIsEmpty();
+
+  return database;
 }
 
 @HiveType(typeId: 0)
