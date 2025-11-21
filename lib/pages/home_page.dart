@@ -214,6 +214,7 @@ class HomePageBody extends StatelessWidget {
           ],
         ),
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: exercise, selectedWorkout: workout))),
+        onLongPress: () => handleLongPressOfExerciseCard(context, workout, exercise),
       ),
     );
   }
@@ -285,6 +286,31 @@ class HomePageBody extends StatelessWidget {
               ],
             );
           }
+        );
+      },
+    );
+  }
+
+  void handleLongPressOfExerciseCard(BuildContext context, Workout workout, Exercise exercise) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete Exercise'),
+          content: Text('Are you sure you want to delete the exercise "${exercise.nameKey}" from this workout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                database.deleteExerciseFromWorkout(workout, exercise.nameKey);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Delete'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+          ],
         );
       },
     );
