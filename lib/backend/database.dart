@@ -1,6 +1,8 @@
 import 'package:hive/hive.dart';
 import 'models.dart';
 
+///A Very simplex NoSQL (key-value) database that stores all data as a binary blob at key 0 in a Hive box.
+///Hive just manages the the serialization and storage to disk (cross-platform).
 class WorkoutDatabase {
   
   final Box<AllWorkouts> box;
