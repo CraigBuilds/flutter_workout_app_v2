@@ -147,19 +147,24 @@ class HomePageBody extends StatelessWidget {
   }
 
   Widget _buildWorkoutCard(BuildContext context, Workout workout) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(title: Text('${workout.dateKey.dayOfWeek()} ${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}')),
-          Expanded(
-            child: ListView(
-              children: [
-                ...workout.exercises.values.map((exercise) => _buildExerciseCard(context, workout, exercise)),
-                _buildAddExerciseButton(context, workout),
-              ],
+    return GestureDetector(
+      onLongPress: () => handleWorkoutCardLongPress(context, workout),
+      child: Card(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text('${workout.dateKey.dayOfWeek()} ${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}'),
             ),
-          ),
-        ],
+            Expanded(
+              child: ListView(
+                children: [
+                  ...workout.exercises.values.map((exercise) => _buildExerciseCard(context, workout, exercise)),
+                  _buildAddExerciseButton(context, workout),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -225,6 +230,31 @@ class HomePageBody extends StatelessWidget {
             TextButton(
               onPressed: () {
                 database.deleteExerciseFromWorkout(workout, exercise.nameKey);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Delete'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void handleWorkoutCardLongPress(BuildContext context, Workout workout) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete Workout'),
+          content: Text('Are you sure you want to delete the workout for ${workout.dateKey}? This will also delete all exercises and sets associated with this workout.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                database.deleteWorkout(workout.dateKey);
                 Navigator.of(context).pop();
               },
               child: const Text('Delete'),
