@@ -65,7 +65,7 @@ class ExerciseSet {
   final double weight;
 
   @HiveField(3)
-  final bool completed = false;
+  final bool completed;
 
   @HiveField(4)
   final int partialReps = 0;
@@ -76,7 +76,7 @@ class ExerciseSet {
   @HiveField(6)
   final int rir = 0;
 
-  ExerciseSet({required this.indexKey, required this.reps, required this.weight});
+  ExerciseSet({required this.indexKey, required this.reps, required this.weight, required this.completed});
 }
 
 @HiveType(typeId: 4)

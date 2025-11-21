@@ -128,6 +128,7 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       indexKey: fields[0] as int,
       reps: fields[1] as int,
       weight: fields[2] as double,
+      completed: fields[3] as bool,
     );
   }
 

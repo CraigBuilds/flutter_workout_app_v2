@@ -131,7 +131,7 @@ class SetLoggingPage extends StatelessWidget {
       database.putSetInExercise(
         selectedWorkout,
         selectedExercise,
-        ExerciseSet(indexKey: set.indexKey, reps: reps, weight: weight),
+        ExerciseSet(indexKey: set.indexKey, reps: reps, weight: weight, completed: set.completed),
       );
     },
   );
@@ -156,6 +156,17 @@ class SetLoggingPage extends StatelessWidget {
 
   Widget _buildExerciseSetTile(BuildContext context, ExerciseSet set, Date? date) => Card(
     child: ListTile(
+      leading: Checkbox(
+        value: set.completed,
+        onChanged: (value) {
+          database.markSetAsCompleted(
+            selectedWorkout,
+            selectedExercise,
+            set,
+            value!,
+          );
+        },
+      ),
       title: date != null ? Text('Set ${set.indexKey} on ${date.toString()}') : Text('Set ${set.indexKey}'),
       subtitle: Text('${set.reps} reps @ ${set.weight} kg'),
       onTap: () {

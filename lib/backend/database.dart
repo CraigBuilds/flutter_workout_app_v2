@@ -89,8 +89,13 @@ class WorkoutDatabase {
     putSetInExercise(
       workout,
       exercise,
-      ExerciseSet(indexKey: getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight),
+      ExerciseSet(indexKey: getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight, completed: false),
     );
+  }
+
+  void markSetAsCompleted(Workout workout, Exercise exercise, ExerciseSet set, bool completed) {
+    final newSet = ExerciseSet(indexKey: set.indexKey, reps: set.reps, weight: set.weight, completed: completed);
+    putSetInExercise(workout, exercise, newSet);
   }
 
   void deleteExerciseSetFromExercise(Workout workout, Exercise exercise, int setIndex) {
@@ -107,7 +112,7 @@ class WorkoutDatabase {
     exercise.sets.clear();
     for (int i = 0; i < setsList.length; i++) {
       final set = setsList[i];
-      exercise.sets[i + 1] = ExerciseSet(indexKey: i + 1, reps: set.reps, weight: set.weight);
+      exercise.sets[i + 1] = ExerciseSet(indexKey: i + 1, reps: set.reps, weight: set.weight, completed: set.completed);
     }
     workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
     allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database    
@@ -174,45 +179,6 @@ class WorkoutDatabase {
   void forceRebuild() {
     final allWorkouts = readData();
     writeData(allWorkouts);
-  }
-
-  void seedInitialDataForTesting() {
-
-    final workout1 = Workout(
-      dateKey: Date(2024, 6, 1),
-      exercises: {
-        'Squat': Exercise(
-          nameKey: 'Squat',
-          sets: {
-            1: ExerciseSet(indexKey: 1, reps: 5, weight: 100.0),
-            2: ExerciseSet(indexKey: 2, reps: 5, weight: 105.0),
-          },
-        ),
-        'Bench Press': Exercise(
-          nameKey: 'Bench Press',
-          sets: {
-            1: ExerciseSet(indexKey: 1, reps: 5, weight: 80.0),
-            2: ExerciseSet(indexKey: 2, reps: 5, weight: 85.0),
-          },
-        ),
-      },
-    );
-
-    final workout2 = Workout(
-      dateKey: Date(2024, 6, 3),
-      exercises: {
-        'Deadlift': Exercise(
-          nameKey: 'Deadlift',
-          sets: {
-            1: ExerciseSet(indexKey: 1, reps: 5, weight: 120.0),
-            2: ExerciseSet(indexKey: 2, reps: 5, weight: 125.0),
-          },
-        ),
-      },
-    );
-
-    putWorkout(workout1.dateKey, workout1);
-    putWorkout(workout2.dateKey, workout2);
   }
 
   // ---- Static Data ---- (We will eventually put this in the hive box as well, so the user can add more items)
