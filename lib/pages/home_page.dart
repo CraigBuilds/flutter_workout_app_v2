@@ -3,6 +3,7 @@ import 'package:flutter_workout_app_v2/backend/models.dart';
 import 'package:flutter_workout_app_v2/backend/database.dart';
 import 'package:flutter_workout_app_v2/pages/set_logging_page.dart';
 import 'package:flutter_workout_app_v2/pages/exercise_selector_page.dart';
+import 'package:flutter_workout_app_v2/pages/settings_page.dart';
 
 //rename to WorkoutCarouselPage and add an actual home page?
 class HomePage extends StatelessWidget {
@@ -66,8 +67,6 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
         _menuItem('settings', Icons.settings, 'Settings'),
         _menuItem('createRoutine', Icons.create, 'Create Workout Routine'),
         _menuItem('browseRoutines', Icons.search, 'Browse Workout Routines'),
-        _menuItem('simulatedDateOffset', Icons.date_range, 'Simulated Date Offset'),
-        _menuItem('deleteAllData', Icons.delete_forever, 'Delete All Data'),
         _menuItem('cancel', Icons.cancel, 'Cancel'),
       ];
 
@@ -87,53 +86,15 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
   void _handleMenuSelection(BuildContext context, String? result) {
     switch (result) {
       case 'settings':
-        break;
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => SettingsPage(database: database)));
       case 'createRoutine':
         break;
       case 'browseRoutines':
-        break;
-      case 'simulatedDateOffset':
-        _showSimulatedDateOffsetDialog(context);
-        break;
-      case 'deleteAllData':
-        database.clearAllData();
         break;
       case 'cancel':
       default:
         break;
     }
-  }
-
-  void _showSimulatedDateOffsetDialog(BuildContext context) async {
-    final offsetController =
-        TextEditingController(text: Date.simulatedDateOffsetDays.toString());
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Set Simulated Date Offset (days)'),
-          content: TextField(
-            controller: offsetController,
-            decoration: const InputDecoration(labelText: 'Offset in days'),
-            keyboardType: TextInputType.number,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                final offset = int.tryParse(offsetController.text);
-                if (offset != null) {
-                  Date.simulatedDateOffsetDays = offset;
-                  database.forceRebuild();
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Set'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
 
