@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_workout_app_v2/backend/models.dart';
 import 'package:flutter_workout_app_v2/backend/database.dart';
+import 'dart:async';
+import 'package:flutter_workout_app_v2/widgets/rest_timer.dart';
 
 class SetLoggingPage extends StatelessWidget {
-  final WorkoutDatabase database; 
+  final WorkoutDatabase database;
   final Workout selectedWorkout;
   final Exercise selectedExercise;
 
-  const SetLoggingPage({super.key, required this.database, required this.selectedExercise, required this.selectedWorkout});
+  const SetLoggingPage({
+    super.key,
+    required this.database,
+    required this.selectedExercise,
+    required this.selectedWorkout,
+  });
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -15,10 +22,7 @@ class SetLoggingPage extends StatelessWidget {
       child: Scaffold(
         appBar: _buildAppBar(context),
         body: TabBarView(
-          children: [
-            _buildTrackTab(context),
-            _buildHistoryTab(context),
-          ],
+          children: [_buildTrackTab(context), _buildHistoryTab(context)],
         ),
       ),
     );
@@ -30,7 +34,11 @@ class SetLoggingPage extends StatelessWidget {
       children: [
         Text(selectedExercise.nameKey),
         Text(
-          '${selectedWorkout.dateKey.dayOfWeek()} ${selectedWorkout.dateKey}${selectedWorkout.dateKey == Date.today() ? " (today)" : selectedWorkout.dateKey > Date.today() ? " (planned)" : " (past)"}',
+          '${selectedWorkout.dateKey.dayOfWeek()} ${selectedWorkout.dateKey}${selectedWorkout.dateKey == Date.today()
+              ? " (today)"
+              : selectedWorkout.dateKey > Date.today()
+              ? " (planned)"
+              : " (past)"}',
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -49,28 +57,32 @@ class SetLoggingPage extends StatelessWidget {
     ),
   );
 
-  Widget _buildTrackTab(BuildContext context) => Column(
-    children: [
-      Expanded(
-        child: ListView.builder(
-          itemCount: selectedExercise.sets.length,
-          itemBuilder: (context, index) {
-            final setsAsList = selectedExercise.sets.values.toList();
-            final set = setsAsList[index];
-            return _buildExerciseSetTile(context, set, null);
-          },
-        ),
+  Widget _buildTrackTab(BuildContext context) {
+    final setsAsList = selectedExercise.sets.values.toList();
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: setsAsList.length,
+            itemBuilder: (context, index) {
+              final set = setsAsList[index];
+              return _buildExerciseSetTile(context, set, null);
+            },
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Add Set'),
+              onTap: () => openAddNewSetDialog(context),
+            ),
+          ),
+          const SizedBox(height: 200),
+        ],
       ),
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.add),
-          label: const Text('Add Set'),
-          onPressed: () => openAddNewSetDialog(context),
-        ),
-      ),
-    ],
-  );
+    );
+  }
 
   Widget _buildHistoryTab(BuildContext contexts) => ListView.builder(
     itemCount: database.getHistoricalSets(selectedExercise).length,
@@ -80,7 +92,7 @@ class SetLoggingPage extends StatelessWidget {
     },
   );
 
-// ---------- Dialogs ----------
+  // ---------- Dialogs ----------
 
   Future openSetDialog({
     required BuildContext context,
@@ -90,12 +102,21 @@ class SetLoggingPage extends StatelessWidget {
     required int initialPartialReps,
     int initialRest = 0,
     int initialRir = 0,
-    required void Function(int reps, double weight, int rest, int partialReps, int rir) onSubmit,
+    required void Function(
+      int reps,
+      double weight,
+      int rest,
+      int partialReps,
+      int rir,
+    )
+    onSubmit,
   }) {
     final repsController = TextEditingController(text: initialReps);
     final weightController = TextEditingController(text: initialWeight);
     final restController = TextEditingController(text: initialRest.toString());
-    final partialRepsController = TextEditingController(text: initialPartialReps.toString());
+    final partialRepsController = TextEditingController(
+      text: initialPartialReps.toString(),
+    );
     final rirController = TextEditingController(text: initialRir.toString());
 
     return showDialog(
@@ -159,20 +180,27 @@ class SetLoggingPage extends StatelessWidget {
     );
   }
 
-  Future openEditSetDialog(BuildContext context, ExerciseSet set) => openSetDialog(
-    context: context,
-    title: 'Edit Set',
-    initialReps: set.reps.toString(),
-    initialWeight: set.weight.toString(),
-    initialPartialReps: set.partialReps,
-    onSubmit: (reps, weight, rest, partialReps, rir) {
-      database.putSetInExercise(
-        selectedWorkout,
-        selectedExercise,
-        ExerciseSet(indexKey: set.indexKey, reps: reps, weight: weight, completed: set.completed, partialReps: partialReps),
+  Future openEditSetDialog(BuildContext context, ExerciseSet set) =>
+      openSetDialog(
+        context: context,
+        title: 'Edit Set',
+        initialReps: set.reps.toString(),
+        initialWeight: set.weight.toString(),
+        initialPartialReps: set.partialReps,
+        onSubmit: (reps, weight, rest, partialReps, rir) {
+          database.putSetInExercise(
+            selectedWorkout,
+            selectedExercise,
+            ExerciseSet(
+              indexKey: set.indexKey,
+              reps: reps,
+              weight: weight,
+              completed: set.completed,
+              partialReps: partialReps,
+            ),
+          );
+        },
       );
-    },
-  );
 
   Future openAddNewSetDialog(BuildContext context) => openSetDialog(
     context: context,
@@ -191,30 +219,46 @@ class SetLoggingPage extends StatelessWidget {
     },
   );
 
-
   // ---------- Shared UI helpers ----------
 
-  Widget _buildExerciseSetTile(BuildContext context, ExerciseSet set, Date? date) => Card(
+  Widget _buildExerciseSetTile(
+    BuildContext context,
+    ExerciseSet set,
+    Date? date,
+  ) => Card(
     child: ListTile(
-      leading: date == null ? Checkbox(
-        value: set.completed,
-        onChanged: (value) {
-          database.markSetAsCompleted(
-            selectedWorkout,
-            selectedExercise,
-            set,
-            value!,
-          );
-        },
-      ) : null,
-      title: date != null ? Text('Set ${set.indexKey} on ${date.toString()}') : Text('Set ${set.indexKey}'),
-      subtitle: Text('${set.reps} reps @ ${set.weight} kg ${set.partialReps > 0 ? '+ ${set.partialReps} partial reps' : ''}'),
-      onTap: () =>openEditSetDialog(context, set),
+      leading: date == null
+          ? Checkbox(
+              value: set.completed,
+              onChanged: (value) {
+                if (value == true) {
+                  debugPrint('Starting rest timer snackbar');
+                  showCountdownSnackbar(context, 30);
+                }
+                database.markSetAsCompleted(
+                  selectedWorkout,
+                  selectedExercise,
+                  set,
+                  value!,
+                );
+              },
+            )
+          : null,
+      title: date != null
+          ? Text('Set ${set.indexKey} on ${date.toString()}')
+          : Text('Set ${set.indexKey}'),
+      subtitle: Text(
+        '${set.reps} reps @ ${set.weight} kg ${set.partialReps > 0 ? '+ ${set.partialReps} partial reps' : ''}',
+      ),
+      onTap: () => openEditSetDialog(context, set),
       onLongPress: () => openExerciseSetLongPressContextMenu(context, set),
     ),
   );
 
-  Future openExerciseSetLongPressContextMenu(BuildContext context, ExerciseSet set) async {
+  Future openExerciseSetLongPressContextMenu(
+    BuildContext context,
+    ExerciseSet set,
+  ) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -234,10 +278,7 @@ class SetLoggingPage extends StatelessWidget {
                 selectedExercise,
                 set.indexKey,
               );
-              database.renumberExerciseSets(
-                selectedWorkout,
-                selectedExercise,
-              );
+              database.renumberExerciseSets(selectedWorkout, selectedExercise);
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),
@@ -246,5 +287,4 @@ class SetLoggingPage extends StatelessWidget {
       ),
     );
   }
-
 }
