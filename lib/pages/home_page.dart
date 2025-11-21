@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_workout_app_v2/backend/models.dart';
-import 'package:flutter_workout_app_v2/backend/workout_database.dart';
+import 'package:flutter_workout_app_v2/backend/database.dart';
 
 class HomePage extends StatelessWidget {
   final WorkoutDatabase database;

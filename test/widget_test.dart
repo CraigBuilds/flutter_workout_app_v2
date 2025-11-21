@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_workout_app_v2/main.dart';
 import 'package:flutter_workout_app_v2/backend/models.dart';
-import 'package:flutter_workout_app_v2/backend/workout_database.dart';
+import 'package:flutter_workout_app_v2/backend/database.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() {
