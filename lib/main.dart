@@ -29,12 +29,7 @@ class MyApp extends StatelessWidget {
     return HiveBoxMaterialApp<AllWorkouts>(
       box: database.box,
       title: 'Workouts App',
-      homeBuilder: (context, box) {
-        return MaterialApp(
-          title: 'Workouts',
-          home: HomePage(database: database),
-        );
-      },
+      homeBuilder: (_, __) => HomePage(database: database)
     );
   }
 }
