@@ -25,7 +25,16 @@ class SetLoggingPage extends StatelessWidget {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) => AppBar(
-    title: Text('${selectedExercise.nameKey} ${selectedWorkout.dateKey.toString()}'),
+    title: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(selectedExercise.nameKey),
+        Text(
+          '${selectedWorkout.dateKey.dayOfWeek()} ${selectedWorkout.dateKey}${selectedWorkout.dateKey == Date.today() ? " (today)" : selectedWorkout.dateKey > Date.today() ? " (planned)" : " (past)"}',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
+    ),
     leading: IconButton(
       icon: const Icon(Icons.home),
       onPressed: () {
@@ -78,17 +87,25 @@ class SetLoggingPage extends StatelessWidget {
     required String title,
     required String initialReps,
     required String initialWeight,
-    required void Function(int reps, double weight) onSubmit,
-  }) =>
-      showDialog(
-        context: context,
-        builder: (context) {
-          final repsController = TextEditingController(text: initialReps);
-          final weightController = TextEditingController(text: initialWeight);
+    required int initialPartialReps,
+    int initialRest = 0,
+    int initialRir = 0,
+    required void Function(int reps, double weight, int rest, int partialReps, int rir) onSubmit,
+  }) {
+    final repsController = TextEditingController(text: initialReps);
+    final weightController = TextEditingController(text: initialWeight);
+    final restController = TextEditingController(text: initialRest.toString());
+    final partialRepsController = TextEditingController(text: initialPartialReps.toString());
+    final rirController = TextEditingController(text: initialRir.toString());
 
-          return AlertDialog(
-            title: Text(title),
-            content: Column(
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
@@ -101,37 +118,58 @@ class SetLoggingPage extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: 'Weight (kg)'),
                 ),
+                TextField(
+                  controller: restController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Rest (sec)'),
+                ),
+                TextField(
+                  controller: partialRepsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Partial Reps'),
+                ),
+                TextField(
+                  controller: rirController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'RIR'),
+                ),
               ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  final reps = int.tryParse(repsController.text) ?? 0;
-                  final weight = double.tryParse(weightController.text) ?? 0.0;
-                  onSubmit(reps, weight);
-                  Navigator.of(context).pop();
-                },
-                child: Text(title == 'Add New Set' ? 'Add' : 'Save'),
-              ),
-            ],
-          );
-        },
-      );
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final reps = int.tryParse(repsController.text) ?? 0;
+              final weight = double.tryParse(weightController.text) ?? 0.0;
+              final rest = int.tryParse(restController.text) ?? 0;
+              final partialReps = int.tryParse(partialRepsController.text) ?? 0;
+              final rir = int.tryParse(rirController.text) ?? 0;
+              onSubmit(reps, weight, rest, partialReps, rir);
+              Navigator.of(context).pop();
+            },
+            child: Text(title == 'Add New Set' ? 'Add' : 'Save'),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future openEditSetDialog(BuildContext context, ExerciseSet set) => openSetDialog(
     context: context,
     title: 'Edit Set',
     initialReps: set.reps.toString(),
     initialWeight: set.weight.toString(),
-    onSubmit: (reps, weight) {
+    initialPartialReps: set.partialReps,
+    onSubmit: (reps, weight, rest, partialReps, rir) {
       database.putSetInExercise(
         selectedWorkout,
         selectedExercise,
-        ExerciseSet(indexKey: set.indexKey, reps: reps, weight: weight, completed: set.completed),
+        ExerciseSet(indexKey: set.indexKey, reps: reps, weight: weight, completed: set.completed, partialReps: partialReps),
       );
     },
   );
@@ -141,12 +179,14 @@ class SetLoggingPage extends StatelessWidget {
     title: 'Add New Set',
     initialReps: '0',
     initialWeight: '0',
-    onSubmit: (reps, weight) {
+    initialPartialReps: 0,
+    onSubmit: (reps, weight, rest, partialReps, rir) {
       database.pushSetToExercise(
         selectedWorkout,
         selectedExercise,
         reps,
         weight,
+        partialReps,
       );
     },
   );
@@ -168,7 +208,7 @@ class SetLoggingPage extends StatelessWidget {
         },
       ) : null,
       title: date != null ? Text('Set ${set.indexKey} on ${date.toString()}') : Text('Set ${set.indexKey}'),
-      subtitle: Text('${set.reps} reps @ ${set.weight} kg'),
+      subtitle: Text('${set.reps} reps @ ${set.weight} kg ${set.partialReps > 0 ? '+ ${set.partialReps} partial reps' : ''}'),
       onTap: () =>openEditSetDialog(context, set),
       onLongPress: () => openExerciseSetLongPressContextMenu(context, set),
     ),

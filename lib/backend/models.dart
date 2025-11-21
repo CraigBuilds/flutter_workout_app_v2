@@ -68,15 +68,15 @@ class ExerciseSet {
   final bool completed;
 
   @HiveField(4)
-  final int partialReps = 0;
+  final int partialReps;
 
   @HiveField(5)
-  final int restMinutes = 0;
+  final int restSeconds = 0;
 
   @HiveField(6)
   final int rir = 0;
 
-  ExerciseSet({required this.indexKey, required this.reps, required this.weight, required this.completed});
+  ExerciseSet({required this.indexKey, required this.reps, required this.weight, required this.completed, required this.partialReps});
 }
 
 @HiveType(typeId: 4)
@@ -146,5 +146,10 @@ class Date {
 
   DateTime toDateTime() {
     return DateTime(year, month, day);
+  }
+
+  String dayOfWeek() {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[toDateTime().weekday - 1];
   }
 }

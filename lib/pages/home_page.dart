@@ -189,7 +189,7 @@ class HomePageBody extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          ListTile(title: Text('${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}')),
+          ListTile(title: Text('${workout.dateKey.dayOfWeek()} ${workout.dateKey}${workout.dateKey == Date.today() ? " (today)" : workout.dateKey > Date.today() ? " (planned)" : " (past)"}')),
           Expanded(
             child: ListView(
               children: [

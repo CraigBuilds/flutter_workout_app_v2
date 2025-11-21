@@ -129,6 +129,7 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       reps: fields[1] as int,
       weight: fields[2] as double,
       completed: fields[3] as bool,
+      partialReps: fields[4] as int,
     );
   }
 
@@ -147,7 +148,7 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       ..writeByte(4)
       ..write(obj.partialReps)
       ..writeByte(5)
-      ..write(obj.restMinutes)
+      ..write(obj.restSeconds)
       ..writeByte(6)
       ..write(obj.rir);
   }

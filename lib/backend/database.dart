@@ -85,16 +85,16 @@ class WorkoutDatabase {
     writeData(allWorkouts); //write back to the database
   }
 
-  void pushSetToExercise(Workout workout, Exercise exercise, int reps, double weight) {
+  void pushSetToExercise(Workout workout, Exercise exercise, int reps, double weight, int partialReps) {
     putSetInExercise(
       workout,
       exercise,
-      ExerciseSet(indexKey: getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight, completed: false),
+      ExerciseSet(indexKey: getNumberOfSetsInExercise(workout, exercise.nameKey) + 1, reps: reps, weight: weight, completed: false, partialReps: partialReps),
     );
   }
 
   void markSetAsCompleted(Workout workout, Exercise exercise, ExerciseSet set, bool completed) {
-    final newSet = ExerciseSet(indexKey: set.indexKey, reps: set.reps, weight: set.weight, completed: completed);
+    final newSet = ExerciseSet(indexKey: set.indexKey, reps: set.reps, weight: set.weight, completed: completed, partialReps: set.partialReps);
     putSetInExercise(workout, exercise, newSet);
   }
 
@@ -112,7 +112,7 @@ class WorkoutDatabase {
     exercise.sets.clear();
     for (int i = 0; i < setsList.length; i++) {
       final set = setsList[i];
-      exercise.sets[i + 1] = ExerciseSet(indexKey: i + 1, reps: set.reps, weight: set.weight, completed: set.completed);
+      exercise.sets[i + 1] = ExerciseSet(indexKey: i + 1, reps: set.reps, weight: set.weight, completed: set.completed, partialReps: set.partialReps);
     }
     workout.exercises[exercise.nameKey] = exercise; //assign modified exercise back to the given workout
     allWorkouts.workouts[workout.dateKey] = workout; //assign modified workout back to the database    
