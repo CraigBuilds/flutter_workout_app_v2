@@ -30,8 +30,16 @@ class RestTimer extends ChangeNotifier {
 
   void _vibrateAndBeep() async {
     debugPrint('Rest timer ended: Vibrating and beeping.');
-    FlutterBeep.beep();
-    //FlutterBeep.vibrate();
+    try {
+      await FlutterBeep.beep();
+    } catch (e) {
+      debugPrint('Error while trying to beep: $e');
+    }
+    try {
+      await FlutterBeep.playSysSound(AndroidSoundIDs.TONE_PROP_BEEP);
+    } catch (e) {
+      debugPrint('Error while trying to vibrate: $e');
+    }
   }
 }
 
