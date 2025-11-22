@@ -18,15 +18,19 @@ class AllWorkoutsAdapter extends TypeAdapter<AllWorkouts> {
     };
     return AllWorkouts(
       workouts: (fields[0] as Map).cast<Date, Workout>(),
+      templateWorkouts: (fields[1] as Map).map((dynamic k, dynamic v) =>
+          MapEntry(k as String, (v as Map).cast<String, Workout>())),
     );
   }
 
   @override
   void write(BinaryWriter writer, AllWorkouts obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.workouts);
+      ..write(obj.workouts)
+      ..writeByte(1)
+      ..write(obj.templateWorkouts);
   }
 
   @override

@@ -15,16 +15,84 @@ class WorkoutDatabase {
   //it is seeded with 7 empty workouts for the last 7 days, to show the user how the app works right away.
   void initializeIfDatabaseIsEmpty() {
     if (box.isEmpty) {
-      box.add(AllWorkouts(workouts: {
-        Date.today() -7 : Workout(dateKey: Date.today() -7, exercises: {}),
-        Date.today() -6 : Workout(dateKey: Date.today() -6, exercises: {}),
-        Date.today() -5 : Workout(dateKey: Date.today() -5, exercises: {}),
-        Date.today() -4 : Workout(dateKey: Date.today() -4, exercises: {}),
-        Date.today() -3 : Workout(dateKey: Date.today() -3, exercises: {}),
-        Date.today() -2 : Workout(dateKey: Date.today() -2, exercises: {}),
-        Date.today() -1 : Workout(dateKey: Date.today() -1, exercises: {}),
-      }));
+      box.add(
+        AllWorkouts(
+          workouts: {
+            Date.today() -7 : Workout(dateKey: Date.today() -7, exercises: {}),
+            Date.today() -6 : Workout(dateKey: Date.today() -6, exercises: {}),
+            Date.today() -5 : Workout(dateKey: Date.today() -5, exercises: {}),
+            Date.today() -4 : Workout(dateKey: Date.today() -4, exercises: {}),
+            Date.today() -3 : Workout(dateKey: Date.today() -3, exercises: {}),
+            Date.today() -2 : Workout(dateKey: Date.today() -2, exercises: {}),
+            Date.today() -1 : Workout(dateKey: Date.today() -1, exercises: {}),
+          },
+          templateWorkouts: makeTemplateWorkouts()
+        )
+      );
     }
+  }
+
+  Map<String, Workout> makeTemplatePPLRoutine() {
+    return {
+      "Push Day": Workout(
+        dateKey: Date.today(),
+        exercises: {
+          "Flat Barbell Bench Press": Exercise(nameKey: "Flat Barbell Bench Press", sets: {}),
+          "Seated Overhead Dumbbell Press": Exercise(nameKey: "Seated Overhead Dumbbell Press", sets: {}),
+          "Tricep Pushdowns (Bar)": Exercise(nameKey: "Tricep Pushdowns (Bar)", sets: {}),
+          "Cable Lateral Raises": Exercise(nameKey: "Cable Lateral Raises", sets: {}),
+        }
+      ),
+      "Pull Day": Workout(
+        dateKey: Date.today(),
+        exercises: {
+          "Seated Cable Row": Exercise(nameKey: "Seated Cable Row", sets: {}),
+          "Chin-Ups (Underhand Grip)": Exercise(nameKey: "Chin-Ups (Underhand Grip)", sets: {}),
+          "Barbell Curls": Exercise(nameKey: "Barbell Curls", sets: {}),
+          "Machine Rear Delt Flys": Exercise(nameKey: "Machine Rear Delt Flys", sets: {}),
+        }
+      ),
+      "Leg Day": Workout(
+        dateKey: Date.today(),
+        exercises: {
+          "Leg Press": Exercise(nameKey: "Leg Press", sets: {}),
+          "Barbell Squats": Exercise(nameKey: "Barbell Squats", sets: {}),
+          "Leg Extensions": Exercise(nameKey: "Leg Extensions", sets: {}),
+          "Conventional Deadlift": Exercise(nameKey: "Conventional Deadlift", sets: {}),
+          "Plank": Exercise(nameKey: "Plank", sets: {}),
+        }
+      )
+    };
+  }
+
+  Map<String, Workout> makeTemplateFullBodyRoutine() {
+    return {
+      "Day A" : Workout(
+        dateKey: Date.today(),
+        exercises: {
+          "Flat Barbell Bench Press": Exercise(nameKey: "Flat Barbell Bench Press", sets: {}),
+          "Seated Cable Row": Exercise(nameKey: "Seated Cable Row", sets: {}),
+          "Barbell Squats": Exercise(nameKey: "Barbell Squats", sets: {}),
+          "Barbell Curls": Exercise(nameKey: "Barbell Curls", sets: {}),
+        }
+      ),
+      "Day B" : Workout(
+        dateKey: Date.today(),
+        exercises: {
+          "Seated Overhead Dumbbell Press": Exercise(nameKey: "Seated Overhead Dumbbell Press", sets: {}),
+          "Chin-Ups (Underhand Grip)": Exercise(nameKey: "Chin-Ups (Underhand Grip)", sets: {}),
+          "Conventional Deadlift": Exercise(nameKey: "Conventional Deadlift", sets: {}),
+          "Tricep Pushdowns (Bar)": Exercise(nameKey: "Tricep Pushdowns (Bar)", sets: {}),
+        }
+      ),
+    };
+  }
+
+  Map<String, Map<String, Workout>> makeTemplateWorkouts() {
+    return {
+      "Craig's PPL Routine": makeTemplatePPLRoutine(),
+      "Craig's Full Body Routine": makeTemplateFullBodyRoutine(),
+    };
   }
 
   // Helpers to get and set the single AllWorkouts object stored in the box
@@ -183,7 +251,7 @@ class WorkoutDatabase {
   }
 
   void clearAllData() {
-    final empty = AllWorkouts(workouts: {});
+    final empty = AllWorkouts(workouts: {}, templateWorkouts: makeTemplateWorkouts());
     writeData(empty); //replace root object
   }
 

@@ -26,7 +26,10 @@ class AllWorkouts {
   @HiveField(0)
   final Map<Date, Workout> workouts;
 
-  AllWorkouts({required this.workouts});
+  @HiveField(1)
+  final Map<String, Map<String, Workout>> templateWorkouts; //templateName -> (workoutName -> Workout)
+
+  AllWorkouts({required this.workouts, required this.templateWorkouts});
 }
 
 @HiveType(typeId: 1)
