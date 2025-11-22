@@ -319,9 +319,11 @@ class HomePageBody extends StatelessWidget {
         break;
       case 'saveTemplate':
         //create a dialog that asks for a routine name and workout name, then saves the workout as a template
+        //or should it navigate to a new page for this?
         break;
       case 'loadTemplate':
         //create a dialog that shows a list of routines to load from, then a list of workouts in that routine to load from. Once confirmed, load the workout into the current workout.
+        //or should it navigate to a new page for this?
         break;
       default:
         break;
