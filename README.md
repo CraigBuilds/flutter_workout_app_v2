@@ -19,7 +19,6 @@ samples, guidance on mobile development, and a full API reference.
 
 # High priority
 
-- [ ] "Add New Set" Dialog should use the last set values as initial value
 - [ ] Save/Load Workout Templates
 - [ ] Duplicate Set (Copy/paste a previously made set)
 - [ ] Display workoutName in HomePage Workout Card (The name can come from the template)

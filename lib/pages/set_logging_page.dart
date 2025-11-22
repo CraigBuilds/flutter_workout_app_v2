@@ -205,9 +205,9 @@ class SetLoggingPage extends StatelessWidget {
   Future openAddNewSetDialog(BuildContext context) => openSetDialog(
     context: context,
     title: 'Add New Set',
-    initialReps: '0',
-    initialWeight: '0',
-    initialPartialReps: 0,
+    initialReps: database.getLatestSetForExerciseOrNull(selectedExercise)?.reps.toString() ?? '0',
+    initialWeight: database.getLatestSetForExerciseOrNull(selectedExercise)?.weight.toString() ?? '0.0',
+    initialPartialReps: database.getLatestSetForExerciseOrNull(selectedExercise)?.partialReps ?? 0,
     onSubmit: (reps, weight, rest, partialReps, rir) {
       database.pushSetToExercise(
         selectedWorkout,
@@ -232,7 +232,6 @@ class SetLoggingPage extends StatelessWidget {
               value: set.completed,
               onChanged: (value) {
                 if (value == true) {
-                  debugPrint('Starting rest timer snackbar');
                   showCountdownSnackbar(context, 30);
                 }
                 database.markSetAsCompleted(

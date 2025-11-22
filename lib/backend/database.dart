@@ -151,7 +151,7 @@ class WorkoutDatabase {
     return defaultIndex;
   }
 
-  List<(Date, ExerciseSet)> getHistoricalSets(Exercise exercise) {
+  List<(Date, ExerciseSet)> getHistoricalSets(Exercise exercise, {bool removeIncompleteSets = true}) {
     final allWorkouts = readData();
     final List<(Date, ExerciseSet)> historicalSets = [];
     for (final workout in allWorkouts.workouts.values) {
@@ -163,8 +163,23 @@ class WorkoutDatabase {
       }
     }
     historicalSets.sort((a, b) => b.$1 > a.$1 ? 1 : -1);
-    historicalSets.retainWhere((element) => element.$2.completed);
+    if (removeIncompleteSets) {
+      historicalSets.retainWhere((element) => element.$2.completed);
+    }
     return historicalSets;
+  }
+
+  ExerciseSet? getLatestSetForExerciseOrNull(Exercise exercise) {
+    final historicalSets = getHistoricalSets(exercise, removeIncompleteSets: false);
+    if (historicalSets.isEmpty) {
+      return null;
+    }
+    //sort the sets by index (highest to lowest)
+    historicalSets.sort((a, b) => b.$2.indexKey - a.$2.indexKey);
+    //sort the sets by date (newest to oldest)
+    historicalSets.sort((a, b) => b.$1 > a.$1 ? 1 : -1);
+    //return the first set
+    return historicalSets.first.$2;
   }
 
   void clearAllData() {
