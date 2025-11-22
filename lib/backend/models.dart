@@ -68,15 +68,45 @@ class ExerciseSet {
   final bool completed;
 
   @HiveField(4)
-  final int partialReps;
-
-  @HiveField(5)
   final int restSeconds = 0;
 
-  @HiveField(6)
+  @HiveField(5)
   final int rir = 0;
 
+  @HiveField(6)
+  final int partialReps;
+
+  @HiveField(7)
+  final int forcedReps = 0;
+
+  @HiveField(8)
+  final int restPauseReps = 0; //also use this for myo reps or cluster reps.
+
+  @HiveField(9)
+  final DropSet? dropSet1 = null;
+
+  @HiveField(10)
+  final DropSet? dropSet2 = null;
+
+  @HiveField(11)
+  final DropSet? dropSet3 = null;
+
+  @HiveField(12)
+  final String tempo = "";
+
+  @HiveField(13)
+  final String form = "";
+
+  @HiveField(14)
+  final int machineSetting = 0;
+
+   @HiveField(15)
+  final String notes = "";
+
   ExerciseSet({required this.indexKey, required this.reps, required this.weight, required this.completed, required this.partialReps});
+
+  //used either partial reps, forced reps, rest pause reps, or drop sets.
+  bool get usedIntensityTechnique => partialReps > 0 || forcedReps > 0 || restPauseReps > 0 || dropSet1 != null;
 }
 
 @HiveType(typeId: 4)
@@ -152,4 +182,16 @@ class Date {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days[toDateTime().weekday - 1];
   }
+}
+
+@HiveType(typeId: 5)
+class DropSet {
+
+  @HiveField(0)
+  final double weight;
+
+  @HiveField(1)
+  final int reps;
+
+  DropSet({required this.weight, required this.reps});
 }

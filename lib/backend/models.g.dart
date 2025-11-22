@@ -129,14 +129,14 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       reps: fields[1] as int,
       weight: fields[2] as double,
       completed: fields[3] as bool,
-      partialReps: fields[4] as int,
+      partialReps: fields[6] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, ExerciseSet obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.indexKey)
       ..writeByte(1)
@@ -146,11 +146,29 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       ..writeByte(3)
       ..write(obj.completed)
       ..writeByte(4)
-      ..write(obj.partialReps)
-      ..writeByte(5)
       ..write(obj.restSeconds)
+      ..writeByte(5)
+      ..write(obj.rir)
       ..writeByte(6)
-      ..write(obj.rir);
+      ..write(obj.partialReps)
+      ..writeByte(7)
+      ..write(obj.forcedReps)
+      ..writeByte(8)
+      ..write(obj.restPauseReps)
+      ..writeByte(9)
+      ..write(obj.dropSet1)
+      ..writeByte(10)
+      ..write(obj.dropSet2)
+      ..writeByte(11)
+      ..write(obj.dropSet3)
+      ..writeByte(12)
+      ..write(obj.tempo)
+      ..writeByte(13)
+      ..write(obj.form)
+      ..writeByte(14)
+      ..write(obj.machineSetting)
+      ..writeByte(15)
+      ..write(obj.notes);
   }
 
   @override
@@ -200,6 +218,43 @@ class DateAdapter extends TypeAdapter<Date> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is DateAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class DropSetAdapter extends TypeAdapter<DropSet> {
+  @override
+  final int typeId = 5;
+
+  @override
+  DropSet read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return DropSet(
+      weight: fields[0] as double,
+      reps: fields[1] as int,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, DropSet obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.weight)
+      ..writeByte(1)
+      ..write(obj.reps);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DropSetAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
