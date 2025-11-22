@@ -59,11 +59,13 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
   @override
   void write(BinaryWriter writer, Workout obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.dateKey)
       ..writeByte(1)
-      ..write(obj.exercises);
+      ..write(obj.exercises)
+      ..writeByte(2)
+      ..write(obj.workoutName);
   }
 
   @override
@@ -138,7 +140,7 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
   @override
   void write(BinaryWriter writer, ExerciseSet obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.indexKey)
       ..writeByte(1)
@@ -170,7 +172,9 @@ class ExerciseSetAdapter extends TypeAdapter<ExerciseSet> {
       ..writeByte(14)
       ..write(obj.machineSetting)
       ..writeByte(15)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(16)
+      ..write(obj.isPR);
   }
 
   @override

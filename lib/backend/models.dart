@@ -38,6 +38,9 @@ class Workout {
   @HiveField(1)
   final Map<String, Exercise> exercises;
 
+  @HiveField(2)
+  final String workoutName = ""; //this is populated if this Workout was created from a template.
+
   Workout({required this.dateKey, required this.exercises});
 }
 @HiveType(typeId: 2)
@@ -103,8 +106,11 @@ class ExerciseSet {
   @HiveField(14)
   final int machineSetting = 0;
 
-   @HiveField(15)
+  @HiveField(15)
   final String notes = "";
+
+  @HiveField(16)
+  final bool isPR = false;
 
   ExerciseSet({required this.indexKey, required this.reps, required this.weight, required this.completed, required this.partialReps});
 
