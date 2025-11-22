@@ -41,18 +41,22 @@ class ExerciseSelectorPage extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: ListView(
-        children: exerciseNames.map((name) {
-          return ListTile(
-            title: Text(name),
-            onTap: () {
-              final exercise = database.getExerciseFromWorkoutOrNull(selectedWorkout, name) ?? Exercise(nameKey: name, sets: {});
-              if (!selectedWorkout.exercises.containsKey(name)) {
-                database.putExerciseInWorkout(selectedWorkout, exercise);
-              }
-              Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: exercise, selectedWorkout: selectedWorkout)));
-            }
-          );
-        }).toList(),
+        children: [
+          ...exerciseNames.map((name) => ListTile(
+                title: Text(name),
+                onTap: () {
+                  final exercise = database.getExerciseFromWorkoutOrNull(selectedWorkout, name) ?? Exercise(nameKey: name, sets: {});
+                  if (!selectedWorkout.exercises.containsKey(name)) {
+                    database.putExerciseInWorkout(selectedWorkout, exercise);
+                  }
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => SetLoggingPage(database: database, selectedExercise: exercise, selectedWorkout: selectedWorkout)),
+                  );
+                },
+              )),
+          const Divider(),
+          const ListTile(title: Text("Make New Super Set")), //this adds both exercises to the workout together.
+          const ListTile(title: Text("Add Custom Exercise")),
+        ],
       ),
     );
   }

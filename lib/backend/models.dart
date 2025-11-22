@@ -49,6 +49,9 @@ class Exercise {
   @HiveField(1)
   final Map<int, ExerciseSet> sets;
 
+  @HiveField(2)
+  final String superSetWithExerciseName = "";
+
   Exercise({required this.nameKey, required this.sets});
 }
 

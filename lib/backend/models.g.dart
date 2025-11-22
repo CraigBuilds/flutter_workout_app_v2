@@ -96,11 +96,13 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
   @override
   void write(BinaryWriter writer, Exercise obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.nameKey)
       ..writeByte(1)
-      ..write(obj.sets);
+      ..write(obj.sets)
+      ..writeByte(2)
+      ..write(obj.superSetWithExerciseName);
   }
 
   @override
