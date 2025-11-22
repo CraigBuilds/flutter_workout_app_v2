@@ -20,6 +20,10 @@ samples, guidance on mobile development, and a full API reference.
 # High priority
 
 - [ ] Save/Load Workout Templates
+    - [ ] Backend support
+        - [x] Add to database
+        - [ ] Add CRUD methods to database
+    - [ ] Make a UI Page or Dialog or this
 - [ ] Improve the Add New / Edit Set Dialog, and make it compatible with all ExerciseSet fields (e.g forced reps, rest, etc)
     - [ ] The Dialog should have a row with "+Drop" buttons. Clicking the button reveals a place to add weight + reps for that drop.
 - [ ] Display workoutName in HomePage Workout Card (The name can come from the template)
