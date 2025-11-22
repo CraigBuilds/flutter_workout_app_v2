@@ -35,7 +35,7 @@ class RestTimer extends ChangeNotifier {
       await HapticFeedback.vibrate();
     } catch (_) {}
     // Beep sound
-    SystemSound.play(SystemSoundType.alert);
+    await SystemSound.play(SystemSoundType.alert);
   }
 }
 
