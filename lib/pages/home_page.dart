@@ -4,6 +4,7 @@ import 'package:flutter_workout_app_v2/backend/database.dart';
 import 'package:flutter_workout_app_v2/pages/set_logging_page.dart';
 import 'package:flutter_workout_app_v2/pages/exercise_selector_page.dart';
 import 'package:flutter_workout_app_v2/pages/settings_page.dart';
+import 'package:flutter_workout_app_v2/widgets/confirm_on_exit.dart';
 
 //rename to WorkoutCarouselPage and add an actual home page?
 class HomePage extends StatelessWidget {
@@ -13,9 +14,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: HomePageAppBar(database: database),
-      body: HomePageBody(database: database),
+    return ConfirmOnExit(
+      child: Scaffold(
+        appBar: HomePageAppBar(database: database),
+        body: HomePageBody(database: database),
+      )
     );
   }
 }
