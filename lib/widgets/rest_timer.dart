@@ -29,6 +29,7 @@ class RestTimer extends ChangeNotifier {
   }
 
   void _vibrateAndBeep() async {
+    debugPrint('Rest timer ended: Vibrating and beeping.');
     // Vibrate
     try {
       await HapticFeedback.vibrate();
