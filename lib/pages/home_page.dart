@@ -247,28 +247,82 @@ class HomePageBody extends StatelessWidget {
     );
   }
 
-  void handleWorkoutCardLongPress(BuildContext context, Workout workout) {
-    showDialog(
+  void handleWorkoutCardLongPress(BuildContext context, Workout workout) async {
+    final result = await showDialog<String>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Delete Workout'),
-          content: Text('Are you sure you want to delete the workout for ${workout.dateKey}? This will also delete all exercises and sets associated with this workout.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                database.deleteWorkout(workout.dateKey);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Delete'),
+        return SimpleDialog(
+          title: Text('Workout Options'),
+          children: [
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, 'delete'),
+              child: Row(
+                children: [
+                  Icon(Icons.delete, size: 20),
+                  const SizedBox(width: 8),
+                  Text('Delete Workout'),
+                ],
+              ),
             ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, 'saveTemplate'),
+              child: Row(
+                children: [
+                  Icon(Icons.save, size: 20),
+                  const SizedBox(width: 8),
+                  Text('Save Workout as Template'),
+                ],
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, 'loadTemplate'),
+              child: Row(
+                children: [
+                  Icon(Icons.file_open, size: 20),
+                  const SizedBox(width: 8),
+                  Text('Load Workout from Template'),
+                ],
+              ),
             ),
           ],
         );
       },
     );
+
+    // Check if context is still mounted before using it after async gap
+    if (!context.mounted) return;
+
+    switch (result) {
+      case 'delete':
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Delete Workout'),
+              content: Text('Are you sure you want to delete the workout for ${workout.dateKey}? This will also delete all exercises and sets associated with this workout.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    database.deleteWorkout(workout.dateKey);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Delete'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          },
+        );
+        break;
+      case 'saveTemplate':
+        break;
+      case 'loadTemplate':
+        break;
+      default:
+        break;
+    }
   }
 }
