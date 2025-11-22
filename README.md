@@ -20,13 +20,17 @@ samples, guidance on mobile development, and a full API reference.
 # High priority
 
 - [ ] Save/Load Workout Templates
-- [ ] Duplicate Set (Copy/paste a previously made set)
+- [ ] Improve the Add New / Edit Set Dialog, and make it compatible with all ExerciseSet fields (e.g forced reps, rest, etc)
+    - [ ] The Dialog should have a row with "+Drop" buttons. Clicking the button reveals a place to add weight + reps for that drop.
 - [ ] Display workoutName in HomePage Workout Card (The name can come from the template)
-- [ ] "Add New Set" Dialog should have a row with "+Drop" buttons. Clicking the button reveals a place to add weight + reps for that drop.
 - [ ] Make it clear that the Workout Card (and all cards) can be long pressed.
 
 # Low priority / long term goals
 
+- [ ] Create Routines (auto create planned workouts from templates at regular intervals (e.g 3 day or 14 day cycles))
+    - e.g 3 day: A → B → Rest (repeat)
+    - e.g 14 day: A → Rest → B → Rest → A → Rest → Rest, B → Rest → A → Rest → B → Rest → Rest
+- [ ] Duplicate Set (Copy/paste a previously made set)
 - [ ] Advanced workout calendar showing decorations on dates with workouts / planned workouts
 - [ ] Workout scheduling (using create new routine) - Look at Runna App for inspiration. Use a calendar plugin.
 - [ ] Make it clear that you can scroll left and right in the home page. Perhaps a Runna style calendar bar at the top?
