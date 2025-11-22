@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter/services.dart'; // For vibration
+import 'package:flutter_beep/flutter_beep.dart';
 
 class RestTimer extends ChangeNotifier {
   int remaining = 0;
@@ -30,12 +30,8 @@ class RestTimer extends ChangeNotifier {
 
   void _vibrateAndBeep() async {
     debugPrint('Rest timer ended: Vibrating and beeping.');
-    // Vibrate
-    try {
-      await HapticFeedback.vibrate();
-    } catch (_) {}
-    // Beep sound
-    await SystemSound.play(SystemSoundType.alert);
+    FlutterBeep.beep();
+    //FlutterBeep.vibrate();
   }
 }
 
